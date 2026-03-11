@@ -1,7 +1,6 @@
 "use client";
 
 import Link from "next/link";
-import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { LayoutDashboard, Megaphone, CalendarDays, Plus, X, Sparkles } from "lucide-react";
 
@@ -30,7 +29,7 @@ export default function Sidebar({ open, onClose }: SidebarProps) {
             <Link href="/" className="flex items-center gap-3 group" onClick={onClose}>
               <div className="relative">
                 <div className="absolute inset-0 rounded-full bg-accent blur-lg opacity-40 group-hover:opacity-60 transition-opacity" />
-                <Image src="/logo.png" alt="The Lemon Co." width={44} height={44} className="relative rounded-full" />
+                <img src="/logo.png" alt="The Lemon Co." width={44} height={44} className="relative rounded-full" />
               </div>
               <div>
                 <span className="block text-[15px] font-bold text-primary leading-tight">The Lemon Co.</span>

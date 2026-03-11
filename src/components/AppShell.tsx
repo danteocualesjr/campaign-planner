@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import Image from "next/image";
 import { Menu } from "lucide-react";
 import Sidebar from "./Sidebar";
 
@@ -19,7 +18,7 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
             <Menu className="w-5 h-5" />
           </button>
           <div className="flex items-center gap-2.5 ml-2">
-            <Image src="/logo.png" alt="The Lemon Co." width={32} height={32} className="rounded-full" />
+            <img src="/logo.png" alt="The Lemon Co." width={32} height={32} className="rounded-full" />
             <span className="font-semibold text-primary text-sm">The Lemon Co.</span>
           </div>
         </div>
