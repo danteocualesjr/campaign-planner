@@ -1,7 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import { Menu, Citrus } from "lucide-react";
+import Image from "next/image";
+import { Menu } from "lucide-react";
 import Sidebar from "./Sidebar";
 
 export default function AppShell({ children }: { children: React.ReactNode }) {
@@ -18,9 +19,7 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
             <Menu className="w-5 h-5" />
           </button>
           <div className="flex items-center gap-2.5 ml-2">
-            <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-accent to-orange flex items-center justify-center">
-              <Citrus className="w-4 h-4 text-bg" />
-            </div>
+            <Image src="/logo.png" alt="The Lemon Co." width={32} height={32} className="rounded-full" />
             <span className="font-semibold text-primary text-sm">The Lemon Co.</span>
           </div>
         </div>

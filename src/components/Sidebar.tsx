@@ -1,8 +1,9 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { usePathname } from "next/navigation";
-import { LayoutDashboard, Megaphone, CalendarDays, Plus, Citrus, X, Sparkles } from "lucide-react";
+import { LayoutDashboard, Megaphone, CalendarDays, Plus, X, Sparkles } from "lucide-react";
 
 const navItems = [
   { href: "/", label: "Dashboard", icon: LayoutDashboard },
@@ -28,10 +29,8 @@ export default function Sidebar({ open, onClose }: SidebarProps) {
           <div className="px-5 pt-6 pb-6 flex items-center justify-between">
             <Link href="/" className="flex items-center gap-3 group" onClick={onClose}>
               <div className="relative">
-                <div className="absolute inset-0 rounded-xl bg-accent blur-lg opacity-50 group-hover:opacity-80 transition-opacity" />
-                <div className="relative w-10 h-10 rounded-xl bg-gradient-to-br from-accent to-orange flex items-center justify-center">
-                  <Citrus className="w-5 h-5 text-bg" />
-                </div>
+                <div className="absolute inset-0 rounded-full bg-accent blur-lg opacity-40 group-hover:opacity-60 transition-opacity" />
+                <Image src="/logo.png" alt="The Lemon Co." width={44} height={44} className="relative rounded-full" />
               </div>
               <div>
                 <span className="block text-[15px] font-bold text-primary leading-tight">The Lemon Co.</span>
