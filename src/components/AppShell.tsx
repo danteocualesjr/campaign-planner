@@ -12,19 +12,21 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
       <Sidebar open={sidebarOpen} onClose={() => setSidebarOpen(false)} />
 
       {/* Mobile header */}
-      <header className="lg:hidden fixed top-0 left-0 right-0 h-14 bg-white border-b border-gray-200 flex items-center px-4 z-30">
-        <button onClick={() => setSidebarOpen(true)} className="p-2 -ml-1 rounded-lg text-gray-500 hover:bg-gray-100">
-          <Menu className="w-5 h-5" />
-        </button>
-        <div className="flex items-center gap-2 ml-2">
-          <div className="w-7 h-7 rounded-lg bg-brand-500 flex items-center justify-center">
-            <Citrus className="w-4 h-4 text-white" />
+      <header className="lg:hidden fixed top-0 left-0 right-0 h-14 z-30 glass">
+        <div className="flex items-center h-full px-4">
+          <button onClick={() => setSidebarOpen(true)} className="p-2 -ml-1 rounded-lg text-muted hover:text-primary hover:bg-card transition-colors">
+            <Menu className="w-5 h-5" />
+          </button>
+          <div className="flex items-center gap-2.5 ml-2">
+            <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-accent to-orange flex items-center justify-center">
+              <Citrus className="w-4 h-4 text-bg" />
+            </div>
+            <span className="font-semibold text-primary text-sm">The Lemon Co.</span>
           </div>
-          <span className="font-semibold text-navy-900 text-sm">The Lemon Co.</span>
         </div>
       </header>
 
-      <main className="lg:ml-[260px] min-h-screen bg-background pt-14 lg:pt-0">
+      <main className="lg:ml-[260px] min-h-screen pt-14 lg:pt-0">
         {children}
       </main>
     </>

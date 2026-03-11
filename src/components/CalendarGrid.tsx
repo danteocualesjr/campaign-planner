@@ -20,9 +20,11 @@ export default function CalendarGrid({ currentDate, campaigns, onDayClick }: Cal
   const forDay = (d: Date) => campaigns.filter((c) => { try { return isWithinInterval(d, { start: parseISO(c.startDate), end: parseISO(c.endDate) }); } catch { return false; } });
 
   return (
-    <div className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
-      <div className="grid grid-cols-7 bg-gray-50 border-b border-gray-100">
-        {DAYS.map((d) => <div key={d} className="py-2.5 text-center text-[11px] font-semibold text-gray-400 uppercase tracking-wider">{d}</div>)}
+    <div className="glass rounded-2xl overflow-hidden">
+      <div className="grid grid-cols-7 border-b border-border">
+        {DAYS.map((d) => (
+          <div key={d} className="py-3 text-center text-[11px] font-semibold text-muted uppercase tracking-wider">{d}</div>
+        ))}
       </div>
       <div className="grid grid-cols-7">
         {days.map((day, i) => {
@@ -31,19 +33,23 @@ export default function CalendarGrid({ currentDate, campaigns, onDayClick }: Cal
           const dc = forDay(day);
           return (
             <div key={i} onClick={() => onDayClick(day)}
-              className={`min-h-[100px] p-1.5 border-b border-r border-gray-100 cursor-pointer transition-colors hover:bg-brand-50/40 ${!inM ? "bg-gray-50/40" : ""}`}>
-              <div className="mb-1">
+              className={`relative min-h-[110px] p-2 border-b border-r border-border cursor-pointer transition-all hover:bg-card-hover ${!inM ? "opacity-40" : ""}`}>
+              {isT && <div className="absolute inset-1 rounded-xl bg-accent/5 pointer-events-none" />}
+              <div className="relative mb-1.5">
                 <span className={`text-[12px] font-medium inline-flex items-center justify-center ${
-                  isT ? "w-6 h-6 rounded-full bg-brand-500 text-white" : inM ? "text-navy-800 px-1" : "text-gray-300 px-1"
+                  isT ? "w-7 h-7 rounded-full bg-gradient-to-br from-accent to-orange text-bg font-bold" : "text-secondary px-1"
                 }`}>{format(day, "d")}</span>
               </div>
-              <div className="space-y-0.5">
-                {dc.slice(0, 3).map((c) => (
-                  <Link key={c.id} href={`/campaigns/${c.id}`} onClick={(e) => e.stopPropagation()}
-                    className={`block text-[10px] text-white px-1 py-px rounded truncate font-medium ${CAMPAIGN_TYPE_COLORS[c.type]} hover:opacity-80 transition-opacity`}
-                    title={`${c.name} (${CAMPAIGN_TYPE_LABELS[c.type]})`}>{c.name}</Link>
-                ))}
-                {dc.length > 3 && <span className="text-[10px] text-gray-400 pl-1">+{dc.length - 3}</span>}
+              <div className="relative space-y-0.5">
+                {dc.slice(0, 3).map((c) => {
+                  const tc = CAMPAIGN_TYPE_COLORS[c.type];
+                  return (
+                    <Link key={c.id} href={`/campaigns/${c.id}`} onClick={(e) => e.stopPropagation()}
+                      className={`block text-[10px] px-1.5 py-0.5 rounded-md truncate font-medium transition-all hover:scale-[1.02] ${tc.bg} text-bg`}
+                      title={`${c.name} (${CAMPAIGN_TYPE_LABELS[c.type]})`}>{c.name}</Link>
+                  );
+                })}
+                {dc.length > 3 && <span className="text-[10px] text-muted pl-1">+{dc.length - 3} more</span>}
               </div>
             </div>
           );
