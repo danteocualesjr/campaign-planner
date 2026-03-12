@@ -110,7 +110,7 @@ export default function Dashboard() {
             </div>
           </div>
         ) : (
-          <div className="space-y-3">{recent.map((c, i) => <div key={c.id} className={`anim-fade delay-${Math.min(i + 1, 5)}`}><CampaignCard campaign={c} /></div>)}</div>
+          <div className="space-y-3">{recent.map((c, i) => <div key={c.id} className="anim-fade" style={{ animationDelay: `${Math.min((i + 1) * 0.05, 0.25)}s` }}><CampaignCard campaign={c} /></div>)}</div>
         )}
       </div>
 

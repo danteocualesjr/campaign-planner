@@ -79,7 +79,7 @@ export default function CampaignsPage() {
       ) : (
         <div className="space-y-3">
           {filtered.map((c, i) => (
-            <div key={c.id} className={`anim-fade delay-${Math.min(i + 2, 5)}`}>
+            <div key={c.id} className="anim-fade" style={{ animationDelay: `${Math.min((i + 2) * 0.05, 0.25)}s` }}>
               <CampaignCard campaign={c} />
             </div>
           ))}

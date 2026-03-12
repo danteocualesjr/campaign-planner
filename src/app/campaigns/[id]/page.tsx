@@ -5,6 +5,7 @@ import { useRouter, useParams } from "next/navigation";
 import Link from "next/link";
 import { ArrowLeft, AlertCircle, Edit3 } from "lucide-react";
 import CampaignForm from "@/components/CampaignForm";
+import ConfirmModal from "@/components/ConfirmModal";
 import { getCampaignById, updateCampaign, deleteCampaign } from "@/lib/storage";
 import { Campaign } from "@/lib/types";
 
@@ -13,6 +14,7 @@ export default function Page() {
   const { id } = useParams() as { id: string };
   const [campaign, setCampaign] = useState<Campaign | null>(null);
   const [mounted, setMounted] = useState(false);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
 
   useEffect(() => { setCampaign(getCampaignById(id) ?? null); setMounted(true); }, [id]);
 
@@ -61,9 +63,19 @@ export default function Page() {
         <CampaignForm 
           initialData={campaign} 
           onSave={(d) => { updateCampaign(id, d); router.push("/campaigns"); }} 
-          onDelete={() => { if (confirm("Delete this campaign?")) { deleteCampaign(id); router.push("/campaigns"); } }} 
+          onDelete={() => setShowDeleteModal(true)} 
         />
       </div>
+
+      <ConfirmModal
+        open={showDeleteModal}
+        onClose={() => setShowDeleteModal(false)}
+        onConfirm={() => { deleteCampaign(id); router.push("/campaigns"); }}
+        title="Delete campaign?"
+        message="This action cannot be undone. All campaign data will be permanently removed."
+        confirmText="Delete Campaign"
+        confirmVariant="danger"
+      />
     </div>
   );
 }
