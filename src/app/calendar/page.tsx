@@ -7,6 +7,7 @@ import { ChevronLeft, ChevronRight, CalendarDays } from "lucide-react";
 import { Campaign } from "@/lib/types";
 import { getCampaigns } from "@/lib/storage";
 import { CAMPAIGN_TYPE_COLORS, CAMPAIGN_TYPE_LABELS } from "@/lib/constants";
+
 import CalendarGrid from "@/components/CalendarGrid";
 
 export default function CalendarPage() {
