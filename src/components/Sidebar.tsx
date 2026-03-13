@@ -2,12 +2,13 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { LayoutDashboard, Megaphone, CalendarDays, Plus, X, Sparkles, ChevronRight } from "lucide-react";
+import { LayoutDashboard, Megaphone, CalendarDays, CreditCard, Plus, X, Sparkles, ChevronRight } from "lucide-react";
 
 const navItems = [
   { href: "/", label: "Dashboard", icon: LayoutDashboard, description: "Overview & stats" },
   { href: "/campaigns", label: "Campaigns", icon: Megaphone, description: "Manage all campaigns" },
   { href: "/calendar", label: "Calendar", icon: CalendarDays, description: "Schedule view" },
+  { href: "/pricing", label: "Pricing", icon: CreditCard, description: "Plans & billing" },
 ];
 
 interface SidebarProps { open: boolean; onClose: () => void; }
