@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { LayoutDashboard, Megaphone, CalendarDays, CreditCard, Plus, X, Sparkles, ChevronRight } from "lucide-react";
+import ThemeToggle from "./ThemeToggle";
 
 const navItems = [
   { href: "/", label: "Dashboard", icon: LayoutDashboard, description: "Overview & stats" },
@@ -11,9 +12,9 @@ const navItems = [
   { href: "/pricing", label: "Pricing", icon: CreditCard, description: "Plans & billing" },
 ];
 
-interface SidebarProps { open: boolean; onClose: () => void; }
+interface SidebarProps { open: boolean; onClose: () => void; isDark: boolean; onToggleTheme: () => void; }
 
-export default function Sidebar({ open, onClose }: SidebarProps) {
+export default function Sidebar({ open, onClose, isDark, onToggleTheme }: SidebarProps) {
   const pathname = usePathname();
 
   return (
@@ -122,8 +123,11 @@ export default function Sidebar({ open, onClose }: SidebarProps) {
               </div>
             </div>
             
-            {/* Version */}
-            <p className="text-center text-[10px] text-muted/50 mt-3">v1.0.0</p>
+            {/* Version + Theme toggle */}
+            <div className="flex items-center justify-between mt-3 px-1">
+              <p className="text-[10px] text-muted/50">v1.0.0</p>
+              <ThemeToggle isDark={isDark} onToggle={onToggleTheme} />
+            </div>
           </div>
         </div>
       </aside>

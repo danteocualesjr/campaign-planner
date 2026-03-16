@@ -5,11 +5,27 @@ import { usePathname } from "next/navigation";
 import { Menu, Plus } from "lucide-react";
 import Link from "next/link";
 import Sidebar from "./Sidebar";
+import ThemeToggle from "./ThemeToggle";
 
 export default function AppShell({ children }: { children: React.ReactNode }) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const [isDark, setIsDark] = useState(true);
   const pathname = usePathname();
+
+  useEffect(() => {
+    const stored = localStorage.getItem("theme");
+    const dark = stored ? stored === "dark" : true;
+    setIsDark(dark);
+    document.documentElement.classList.toggle("light", !dark);
+  }, []);
+
+  function toggleTheme() {
+    const next = !isDark;
+    setIsDark(next);
+    document.documentElement.classList.toggle("light", !next);
+    localStorage.setItem("theme", next ? "dark" : "light");
+  }
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 10);
@@ -23,7 +39,7 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
 
   return (
     <>
-      <Sidebar open={sidebarOpen} onClose={() => setSidebarOpen(false)} />
+      <Sidebar open={sidebarOpen} onClose={() => setSidebarOpen(false)} isDark={isDark} onToggleTheme={toggleTheme} />
 
       {/* Mobile header */}
       <header className={`lg:hidden fixed top-0 left-0 right-0 h-14 z-30 transition-all duration-200 ${
@@ -48,13 +64,16 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
             </div>
           </div>
           
-          <Link 
-            href="/campaigns/new"
-            className="w-9 h-9 rounded-lg bg-gradient-to-r from-accent to-orange flex items-center justify-center text-bg shadow-lg shadow-accent/20"
-            aria-label="Create new campaign"
-          >
-            <Plus className="w-4 h-4" />
-          </Link>
+          <div className="flex items-center gap-2">
+            <ThemeToggle isDark={isDark} onToggle={toggleTheme} />
+            <Link
+              href="/campaigns/new"
+              className="w-9 h-9 rounded-lg bg-gradient-to-r from-accent to-orange flex items-center justify-center text-bg shadow-lg shadow-accent/20"
+              aria-label="Create new campaign"
+            >
+              <Plus className="w-4 h-4" />
+            </Link>
+          </div>
         </div>
       </header>
 
