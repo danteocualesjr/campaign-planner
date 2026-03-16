@@ -127,6 +127,9 @@ export default function CalendarGrid({ currentDate, campaigns, onDayClick }: Cal
                     <span className="text-[11px] font-semibold text-primary">
                       {format(day, "MMM d")} · {dc.length} campaigns
                     </span>
+                    <button onClick={() => setHoveredDay(null)} className="text-muted hover:text-primary transition-colors">
+                      <X className="w-3 h-3" />
+                    </button>
                   </div>
                   <div className="space-y-1 max-h-32 overflow-y-auto scroll-subtle">
                     {dc.map((c) => {
