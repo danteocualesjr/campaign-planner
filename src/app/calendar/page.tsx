@@ -11,6 +11,7 @@ import { CAMPAIGN_TYPE_COLORS, CAMPAIGN_TYPE_LABELS } from "@/lib/constants";
 import CalendarGrid from "@/components/CalendarGrid";
 
 export default function CalendarPage() {
+  
   const router = useRouter();
   const [campaigns, setCampaigns] = useState<Campaign[]>([]);
   const [cur, setCur] = useState(new Date());
