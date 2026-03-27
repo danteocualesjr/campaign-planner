@@ -20,10 +20,10 @@ export default function CampaignsPage() {
 
   if (!mounted) return (
     <div className="p-6 lg:p-8">
-      <div className="animate-pulse space-y-4">
-        <div className="h-10 bg-card rounded-xl w-64" />
-        <div className="h-12 bg-card rounded-xl" />
-        {[1,2,3].map(i=><div key={i} className="h-32 bg-card rounded-2xl" />)}
+      <div className="space-y-4">
+        <div className="h-9 bg-card rounded-lg w-48 animate-pulse" />
+        <div className="h-10 bg-card rounded-lg animate-pulse" />
+        {[1,2,3].map(i => <div key={i} className="h-28 bg-card rounded-xl animate-pulse" />)}
       </div>
     </div>
   );
@@ -37,47 +37,40 @@ export default function CampaignsPage() {
   });
 
   return (
-    <div className="p-6 lg:p-8 max-w-[1100px]">
-      {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4 mb-6 anim-fade">
-        <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-accent/20 to-accent/5 flex items-center justify-center">
-            <Megaphone className="w-5 h-5 text-accent" />
-          </div>
-          <div>
-            <h1 className="text-[24px] font-bold text-primary tracking-tight">Campaigns</h1>
-            <p className="text-[13px] text-muted">{campaigns.length} campaign{campaigns.length !== 1 ? "s" : ""} total</p>
-          </div>
+    <div className="p-6 lg:p-8 max-w-[1060px]">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-5 anim-fade">
+        <div>
+          <h1 className="text-[22px] font-bold text-primary tracking-tight">Campaigns</h1>
+          <p className="text-[12px] text-muted mt-0.5">{campaigns.length} total</p>
         </div>
-        <Link href="/campaigns/new" className="h-10 px-5 rounded-xl btn-primary text-[13px] flex items-center gap-2 w-fit">
-          <Plus className="w-4 h-4" /> New Campaign
+        <Link href="/campaigns/new" className="h-9 px-4 rounded-lg btn-primary text-[12px] flex items-center gap-1.5 w-fit">
+          <Plus className="w-3.5 h-3.5" /> New Campaign
         </Link>
       </div>
 
-      {/* Filters */}
-      {campaigns.length > 0 && <div className="mb-6 anim-fade delay-1"><FilterBar search={search} onSearchChange={setSearch} statusFilter={statusF} onStatusChange={setStatusF} typeFilter={typeF} onTypeChange={setTypeF} productFilter={prodF} onProductChange={setProdF} /></div>}
+      {campaigns.length > 0 && (
+        <div className="mb-5 anim-fade delay-1">
+          <FilterBar search={search} onSearchChange={setSearch} statusFilter={statusF} onStatusChange={setStatusF} typeFilter={typeF} onTypeChange={setTypeF} productFilter={prodF} onProductChange={setProdF} />
+        </div>
+      )}
 
-      {/* List */}
       {campaigns.length === 0 ? (
-        <div className="glass rounded-2xl p-12 text-center anim-fade">
-          <div className="relative w-16 h-16 mx-auto mb-4">
-            <div className="absolute inset-0 bg-accent/30 rounded-2xl blur-xl" />
-            <div className="relative w-16 h-16 rounded-2xl bg-gradient-to-br from-accent/20 to-accent/5 flex items-center justify-center">
-              <Sparkles className="w-7 h-7 text-accent" />
-            </div>
+        <div className="glass rounded-xl p-10 text-center anim-fade">
+          <div className="w-12 h-12 rounded-xl bg-accent-soft flex items-center justify-center mx-auto mb-3">
+            <Sparkles className="w-5 h-5 text-accent" />
           </div>
-          <h3 className="text-[16px] font-semibold text-primary mb-2">No campaigns yet</h3>
-          <p className="text-[13px] text-secondary mb-6">Create your first campaign to get started.</p>
-          <Link href="/campaigns/new" className="inline-flex h-10 px-5 rounded-xl btn-primary text-[13px] items-center gap-2">
-            <Plus className="w-4 h-4" /> Create Campaign
+          <h3 className="text-[15px] font-semibold text-primary mb-1">No campaigns yet</h3>
+          <p className="text-[12px] text-muted mb-4">Create your first campaign to get started.</p>
+          <Link href="/campaigns/new" className="inline-flex h-9 px-4 rounded-lg btn-primary text-[12px] items-center gap-1.5">
+            <Plus className="w-3.5 h-3.5" /> Create Campaign
           </Link>
         </div>
       ) : filtered.length === 0 ? (
-        <div className="glass rounded-2xl p-12 text-center anim-fade">
-          <p className="text-[14px] text-secondary">No campaigns match your filters.</p>
+        <div className="glass rounded-xl p-10 text-center anim-fade">
+          <p className="text-[13px] text-muted">No campaigns match your filters.</p>
         </div>
       ) : (
-        <div className="space-y-3">
+        <div className="space-y-2.5">
           {filtered.map((c, i) => (
             <div key={c.id} className="anim-fade" style={{ animationDelay: `${Math.min((i + 2) * 0.05, 0.25)}s` }}>
               <CampaignCard campaign={c} />

@@ -28,48 +28,34 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
   }
 
   useEffect(() => {
-    const handleScroll = () => setScrolled(window.scrollY > 10);
+    const handleScroll = () => setScrolled(window.scrollY > 8);
     window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  useEffect(() => {
-    setSidebarOpen(false);
-  }, [pathname]);
+  useEffect(() => { setSidebarOpen(false); }, [pathname]);
 
   return (
     <>
       <Sidebar open={sidebarOpen} onClose={() => setSidebarOpen(false)} isDark={isDark} onToggleTheme={toggleTheme} />
 
-      {/* Mobile header */}
-      <header className={`lg:hidden fixed top-0 left-0 right-0 h-14 z-30 transition-all duration-200 ${
-        scrolled ? "glass shadow-lg shadow-black/10" : "bg-transparent"
+      <header className={`lg:hidden fixed top-0 left-0 right-0 h-13 z-30 transition-all duration-200 ${
+        scrolled ? "bg-bg/90 backdrop-blur-xl border-b border-border" : ""
       }`}>
         <div className="flex items-center justify-between h-full px-4">
-          <div className="flex items-center">
-            <button 
-              onClick={() => setSidebarOpen(true)} 
-              className="p-2 -ml-1 rounded-lg text-muted hover:text-primary hover:bg-card transition-colors"
-              aria-label="Open menu"
-              aria-expanded={sidebarOpen}
-            >
+          <div className="flex items-center gap-2">
+            <button onClick={() => setSidebarOpen(true)} className="p-2 -ml-1 rounded-lg text-muted hover:text-primary" aria-label="Menu">
               <Menu className="w-5 h-5" />
             </button>
-            <div className="flex items-center gap-2.5 ml-2">
-              <div className="relative">
-                <div className="absolute inset-0 rounded-full bg-accent/30 blur-md" />
-                <img src="/logo.png" alt="The Lemon Co." width={32} height={32} className="relative rounded-full ring-1 ring-white/10" />
-              </div>
-              <span className="font-semibold text-primary text-sm">The Lemon Co.</span>
-            </div>
+            <img src="/logo.png" alt="" width={28} height={28} className="rounded-full" />
+            <span className="font-semibold text-primary text-[14px]">The Lemon Co.</span>
           </div>
-          
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-1.5">
             <ThemeToggle isDark={isDark} onToggle={toggleTheme} />
             <Link
               href="/campaigns/new"
-              className="w-9 h-9 rounded-lg bg-gradient-to-r from-accent to-orange flex items-center justify-center text-bg shadow-lg shadow-accent/20"
-              aria-label="Create new campaign"
+              className="w-8 h-8 rounded-lg bg-accent flex items-center justify-center text-[#09090B]"
+              aria-label="New campaign"
             >
               <Plus className="w-4 h-4" />
             </Link>
@@ -77,7 +63,7 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
         </div>
       </header>
 
-      <main className="lg:ml-[260px] min-h-screen pt-14 lg:pt-0">
+      <main className="lg:ml-[240px] min-h-screen pt-13 lg:pt-0">
         {children}
       </main>
     </>
