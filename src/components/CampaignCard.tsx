@@ -2,16 +2,16 @@
 
 import Link from "next/link";
 import { format, differenceInDays, isFuture } from "date-fns";
-import { CalendarRange, MapPin, ArrowUpRight, Clock, Zap } from "lucide-react";
+import { ArrowUpRight, Zap, AlertCircle } from "lucide-react";
 import { Campaign } from "@/lib/types";
 import { CAMPAIGN_TYPE_LABELS, CAMPAIGN_TYPE_COLORS, PRODUCT_LINE_LABELS, REGION_LABELS } from "@/lib/constants";
 import StatusBadge from "./StatusBadge";
 
 export default function CampaignCard({ campaign }: { campaign: Campaign }) {
-  const typeColor = CAMPAIGN_TYPE_COLORS[campaign.type];
   const startDate = new Date(campaign.startDate);
   const endDate = new Date(campaign.endDate);
   const today = new Date();
+  const typeColor = CAMPAIGN_TYPE_COLORS[campaign.type];
 
   const daysUntilStart = differenceInDays(startDate, today);
   const daysUntilEnd = differenceInDays(endDate, today);
@@ -23,77 +23,69 @@ export default function CampaignCard({ campaign }: { campaign: Campaign }) {
   const isEnding = campaign.status === "active" && daysUntilEnd <= 3 && daysUntilEnd >= 0;
 
   return (
-    <Link href={`/campaigns/${campaign.id}`}
-      className="group relative block glass rounded-xl overflow-hidden transition-all duration-200 hover:border-border-hover card-lift">
-      {/* Left accent bar */}
-      <div className={`absolute left-0 top-0 bottom-0 w-[3px] ${typeColor.bg}`} />
-
-      <div className="relative pl-5 pr-4 py-4">
-        <div className="flex items-start justify-between gap-4 mb-2.5">
-          <div className="min-w-0 flex-1">
-            <div className="flex items-center gap-2 flex-wrap mb-1">
-              <h3 className="text-[14px] font-semibold text-primary truncate group-hover:text-accent transition-colors">
-                {campaign.name}
-              </h3>
-              <StatusBadge status={campaign.status} />
-              {isUpcoming && (
-                <span className="inline-flex items-center gap-0.5 text-[10px] font-semibold text-orange bg-orange-soft px-1.5 py-0.5 rounded-md">
-                  <Zap className="w-2.5 h-2.5" />
-                  {daysUntilStart === 0 ? "Today" : `${daysUntilStart}d`}
-                </span>
-              )}
-              {isEnding && (
-                <span className="inline-flex items-center gap-0.5 text-[10px] font-semibold text-red bg-red-soft px-1.5 py-0.5 rounded-md">
-                  <Clock className="w-2.5 h-2.5" />
-                  {daysUntilEnd === 0 ? "Today" : `${daysUntilEnd}d left`}
-                </span>
-              )}
-            </div>
-            <p className={`text-[11px] font-medium ${typeColor.text}`}>
-              {CAMPAIGN_TYPE_LABELS[campaign.type]}
-            </p>
-          </div>
-          {campaign.budget > 0 && (
-            <div className="text-right shrink-0">
-              <p className="text-[16px] font-bold text-primary tabular-nums tracking-tight">₱{campaign.budget.toLocaleString()}</p>
-              <p className="text-[10px] text-muted">budget</p>
-            </div>
+    <Link
+      href={`/campaigns/${campaign.id}`}
+      className="group flex items-center gap-4 p-4 card card-interactive"
+    >
+      {/* Type indicator */}
+      <div className={`w-1 self-stretch rounded-full ${typeColor.bg}`} />
+      
+      {/* Content */}
+      <div className="flex-1 min-w-0">
+        <div className="flex items-center gap-2 mb-1">
+          <h3 className="text-[14px] font-semibold text-text truncate group-hover:text-lemon transition-colors">
+            {campaign.name}
+          </h3>
+          <StatusBadge status={campaign.status} />
+          {isUpcoming && (
+            <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded bg-warning-muted text-warning text-[10px] font-semibold">
+              <Zap className="w-2.5 h-2.5" />
+              {daysUntilStart}d
+            </span>
+          )}
+          {isEnding && (
+            <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded bg-danger-muted text-danger text-[10px] font-semibold">
+              <AlertCircle className="w-2.5 h-2.5" />
+              {daysUntilEnd}d left
+            </span>
           )}
         </div>
+        
+        <div className="flex items-center gap-3 text-[12px] text-text-muted">
+          <span className={typeColor.text}>{CAMPAIGN_TYPE_LABELS[campaign.type]}</span>
+          <span>·</span>
+          <span>{format(startDate, "MMM d")} – {format(endDate, "MMM d")}</span>
+          <span>·</span>
+          <span>{REGION_LABELS[campaign.region]}</span>
+        </div>
 
-        {campaign.description && (
-          <p className="text-[12px] text-secondary leading-relaxed line-clamp-1 mb-3">{campaign.description}</p>
-        )}
-
-        {/* Progress bar */}
+        {/* Progress bar for active */}
         {campaign.status === "active" && (
-          <div className="h-1 rounded-full bg-border mb-3">
-            <div className="h-full rounded-full bg-gradient-to-r from-accent to-orange transition-all duration-500" style={{ width: `${progress}%` }} />
+          <div className="mt-2.5 h-1 rounded-full bg-emphasis overflow-hidden">
+            <div
+              className="h-full rounded-full bg-gradient-to-r from-lemon to-lemon-dark transition-all"
+              style={{ width: `${progress}%` }}
+            />
           </div>
         )}
-
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-3 text-[11px] text-muted">
-            <span className="inline-flex items-center gap-1">
-              <CalendarRange className="w-3 h-3" />
-              {format(startDate, "MMM d")} – {format(endDate, "MMM d")}
-            </span>
-            <span className="inline-flex items-center gap-1">
-              <MapPin className="w-3 h-3" />
-              <span className="hidden sm:inline">{REGION_LABELS[campaign.region]}</span>
-            </span>
+      </div>
+      
+      {/* Right side */}
+      <div className="flex items-center gap-4 shrink-0">
+        {campaign.budget > 0 && (
+          <div className="text-right hidden sm:block">
+            <p className="text-[15px] font-bold text-text tabular-nums">₱{campaign.budget.toLocaleString()}</p>
+            <p className="text-[11px] text-text-subtle">budget</p>
           </div>
-          <div className="flex items-center gap-1.5">
-            {campaign.productLines.length > 0 && (
-              <span className="text-[10px] font-medium text-accent bg-accent-soft px-1.5 py-0.5 rounded-md">
-                {PRODUCT_LINE_LABELS[campaign.productLines[0]]}
-                {campaign.productLines.length > 1 && ` +${campaign.productLines.length - 1}`}
-              </span>
-            )}
-            <div className="w-7 h-7 rounded-md bg-card flex items-center justify-center text-muted group-hover:text-accent transition-colors">
-              <ArrowUpRight className="w-3.5 h-3.5" />
-            </div>
-          </div>
+        )}
+        {campaign.productLines.length > 0 && (
+          <span className="hidden lg:inline-flex px-2 py-1 rounded-md bg-lemon-muted text-lemon text-[11px] font-medium">
+            {PRODUCT_LINE_LABELS[campaign.productLines[0]]}
+            {campaign.productLines.length > 1 && ` +${campaign.productLines.length - 1}`}
+          </span>
+        )}
+        <div className="w-8 h-8 rounded-lg bg-muted flex items-center justify-center text-text-subtle group-hover:text-lemon group-hover:bg-lemon-muted transition-colors">
+          <ArrowUpRight className="w-4 h-4" />
         </div>
       </div>
     </Link>

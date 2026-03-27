@@ -1,16 +1,16 @@
 "use client";
 
 import { useState } from "react";
-import { Check, CreditCard, Zap, Building2, Sparkles, Loader2, ArrowRight } from "lucide-react";
+import { Check, Zap, Sparkles, Building2, Loader2, ArrowRight } from "lucide-react";
 import { PRICING_PLANS } from "@/lib/stripe-config";
 
-const planIcons = { starter: Zap, pro: Sparkles, enterprise: Building2 } as const;
+const icons = { starter: Zap, pro: Sparkles, enterprise: Building2 };
 
 export default function PricingPage() {
-  const [loadingPlan, setLoadingPlan] = useState<string | null>(null);
+  const [loading, setLoading] = useState<string | null>(null);
 
   async function handleCheckout(planId: string) {
-    setLoadingPlan(planId);
+    setLoading(planId);
     try {
       const res = await fetch("/api/checkout", {
         method: "POST",
@@ -23,90 +23,86 @@ export default function PricingPage() {
     } catch (err) {
       alert(err instanceof Error ? err.message : "Checkout failed");
     } finally {
-      setLoadingPlan(null);
+      setLoading(null);
     }
   }
 
   return (
-    <div className="p-6 lg:p-8 max-w-[960px] mx-auto">
-      <div className="text-center mb-10 anim-fade">
-        <div className="inline-flex items-center gap-1.5 text-[10px] font-bold text-accent uppercase tracking-widest mb-3">
-          <CreditCard className="w-3.5 h-3.5" /> Pricing
-        </div>
-        <h1 className="text-[26px] sm:text-[32px] font-bold text-primary tracking-tight mb-2">
-          Plans for every team
+    <div className="p-6 lg:p-8 max-w-4xl mx-auto">
+      {/* Header */}
+      <div className="text-center mb-12 animate-in">
+        <h1 className="text-2xl lg:text-3xl font-bold text-text mb-3">
+          Simple pricing for everyone
         </h1>
-        <p className="text-[14px] text-muted max-w-md mx-auto">
-          All plans include a 14-day free trial. No credit card required.
+        <p className="text-[15px] text-text-muted max-w-md mx-auto">
+          Choose the plan that fits your team. All plans include a 14-day free trial.
         </p>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+      {/* Plans */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
         {PRICING_PLANS.map((plan, i) => {
-          const Icon = planIcons[plan.id];
-          const rec = plan.recommended;
+          const Icon = icons[plan.id];
+          const pop = plan.recommended;
           return (
             <div
               key={plan.id}
-              className={`relative glass rounded-xl overflow-hidden transition-all duration-200 hover:border-border-hover anim-fade ${
-                rec ? "ring-1 ring-accent/30" : ""
-              }`}
-              style={{ animationDelay: `${(i + 1) * 0.06}s` }}
+              className={`card p-6 animate-in ${pop ? "ring-1 ring-lemon" : ""}`}
+              style={{ animationDelay: `${(i + 1) * 75}ms` }}
             >
-              {rec && <div className="h-0.5 bg-accent" />}
-              <div className="p-5">
-                {rec && (
-                  <span className="text-[10px] font-bold text-accent uppercase tracking-wider">Most Popular</span>
-                )}
-                <div className="flex items-center gap-2 mt-1 mb-5">
-                  <div className="w-8 h-8 rounded-lg bg-accent-soft flex items-center justify-center">
-                    <Icon className="w-4 h-4 text-accent" />
-                  </div>
-                  <div>
-                    <h2 className="text-[16px] font-bold text-primary">{plan.name}</h2>
-                    <p className="text-[11px] text-muted">{plan.description}</p>
-                  </div>
+              {pop && (
+                <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded bg-lemon text-base text-[10px] font-bold uppercase mb-3">
+                  Popular
+                </span>
+              )}
+              
+              <div className="flex items-center gap-2.5 mb-4">
+                <div className={`w-9 h-9 rounded-lg flex items-center justify-center ${pop ? "bg-lemon-muted" : "bg-muted"}`}>
+                  <Icon className={`w-4 h-4 ${pop ? "text-lemon" : "text-text-muted"}`} />
                 </div>
-
-                <div className="mb-5">
-                  <span className="text-[28px] font-bold text-primary tracking-tight">{plan.price}</span>
-                  <span className="text-[12px] text-muted">/mo</span>
+                <div>
+                  <h3 className="text-[15px] font-semibold text-text">{plan.name}</h3>
+                  <p className="text-[11px] text-text-subtle">{plan.description}</p>
                 </div>
-
-                <ul className="space-y-2.5 mb-5">
-                  {plan.features.map((f) => (
-                    <li key={f} className="flex items-center gap-2 text-[12px] text-secondary">
-                      <Check className="w-3.5 h-3.5 text-green shrink-0" />
-                      {f}
-                    </li>
-                  ))}
-                </ul>
-
-                <button
-                  onClick={() => handleCheckout(plan.id)}
-                  disabled={!plan.priceId || loadingPlan !== null}
-                  className={`w-full h-10 rounded-lg text-[12px] font-semibold flex items-center justify-center gap-1.5 transition-all ${
-                    rec ? "btn-primary" : "btn-ghost"
-                  } disabled:opacity-40 disabled:cursor-not-allowed`}
-                >
-                  {loadingPlan === plan.id ? (
-                    <><Loader2 className="w-3.5 h-3.5 animate-spin" /> Redirecting...</>
-                  ) : plan.priceId ? (
-                    <>Get Started <ArrowRight className="w-3.5 h-3.5" /></>
-                  ) : (
-                    "Coming Soon"
-                  )}
-                </button>
               </div>
+
+              <div className="mb-5">
+                <span className="text-3xl font-bold text-text">{plan.price}</span>
+                <span className="text-[13px] text-text-muted">/mo</span>
+              </div>
+
+              <ul className="space-y-2.5 mb-6">
+                {plan.features.map((f) => (
+                  <li key={f} className="flex items-start gap-2 text-[13px] text-text-muted">
+                    <Check className="w-4 h-4 text-success shrink-0 mt-0.5" />
+                    {f}
+                  </li>
+                ))}
+              </ul>
+
+              <button
+                onClick={() => handleCheckout(plan.id)}
+                disabled={!plan.priceId || loading !== null}
+                className={`w-full h-10 btn ${pop ? "btn-primary" : "btn-secondary"} disabled:opacity-50 disabled:cursor-not-allowed`}
+              >
+                {loading === plan.id ? (
+                  <><Loader2 className="w-4 h-4 animate-spin" /> Redirecting...</>
+                ) : plan.priceId ? (
+                  <>Get started <ArrowRight className="w-4 h-4" /></>
+                ) : (
+                  "Coming soon"
+                )}
+              </button>
             </div>
           );
         })}
       </div>
 
-      <div className="mt-8 text-center text-[12px] text-muted anim-fade delay-4">
-        Secure payments by Stripe &middot; Cancel anytime &middot;{" "}
-        <a href="mailto:hello@thelemonco.com" className="text-accent hover:underline">Contact us</a>
-      </div>
+      {/* Footer */}
+      <p className="text-center text-[13px] text-text-subtle animate-in delay-4">
+        Secure payments by Stripe · Cancel anytime ·{" "}
+        <a href="mailto:hello@thelemonco.com" className="text-lemon hover:underline">Contact us</a>
+      </p>
     </div>
   );
 }

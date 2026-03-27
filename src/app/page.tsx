@@ -2,10 +2,9 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { Megaphone, Rocket, DollarSign, Plus, FileText, Sparkles, ArrowRight, TrendingUp } from "lucide-react";
+import { Plus, FileText, ArrowRight, Sparkles, TrendingUp, Clock, Target } from "lucide-react";
 import { Campaign, CampaignTemplate } from "@/lib/types";
 import { getCampaigns, createCampaign } from "@/lib/storage";
-import StatsCard from "@/components/StatsCard";
 import CampaignCard from "@/components/CampaignCard";
 import TemplatePickerModal from "@/components/TemplatePickerModal";
 
@@ -31,85 +30,125 @@ export default function Dashboard() {
   }
 
   if (!mounted) return (
-    <div className="p-6 lg:p-8">
-      <div className="space-y-6">
-        <div className="h-40 bg-card rounded-2xl animate-pulse" />
-        <div className="grid grid-cols-3 gap-4">
-          {[1,2,3].map(i => <div key={i} className="h-28 bg-card rounded-xl animate-pulse" />)}
-        </div>
+    <div className="p-6">
+      <div className="h-48 rounded-2xl bg-subtle animate-pulse mb-6" />
+      <div className="grid grid-cols-3 gap-4 mb-6">
+        {[1,2,3].map(i => <div key={i} className="h-24 rounded-xl bg-subtle animate-pulse" />)}
       </div>
     </div>
   );
 
   const active = campaigns.filter((c) => c.status === "active");
-  const upcoming = campaigns.filter((c) => c.status === "draft" && new Date(c.startDate) > new Date());
+  const drafts = campaigns.filter((c) => c.status === "draft");
   const budget = campaigns.filter((c) => c.status === "active" || c.status === "draft").reduce((s, c) => s + c.budget, 0);
-  const recent = campaigns.slice(0, 5);
+  const recent = campaigns.slice(0, 4);
 
   return (
-    <div className="p-6 lg:p-8 max-w-[1060px]">
+    <div className="p-6 lg:p-8 max-w-5xl">
       {/* Hero */}
-      <div className="relative overflow-hidden rounded-2xl mb-8 anim-fade" style={{ background: "var(--gradient-gold)" }}>
-        <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGNpcmNsZSBjeD0iMjAiIGN5PSIyMCIgcj0iMSIgZmlsbD0icmdiYSgwLDAsMCwwLjA1KSIvPjwvc3ZnPg==')] opacity-60" />
-        <div className="relative px-7 py-8 sm:py-10 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-5">
-          <div>
-            <p className="text-[11px] font-bold text-black/40 uppercase tracking-widest mb-2">Campaign Planner</p>
-            <h1 className="text-[26px] sm:text-[30px] font-bold text-[#09090B] tracking-tight mb-1.5">
-              Welcome back
-            </h1>
-            <p className="text-[14px] text-black/50 max-w-sm">
-              Plan, schedule, and track campaigns across your franchise network.
-            </p>
-          </div>
-          <div className="flex items-center gap-2 shrink-0">
-            <button onClick={() => setShowTemplates(true)} className="h-9 px-4 rounded-lg bg-black/10 text-[12px] font-semibold text-[#09090B] hover:bg-black/15 transition-colors flex items-center gap-1.5">
-              <FileText className="w-3.5 h-3.5" /> Template
-            </button>
-            <Link href="/campaigns/new" className="h-9 px-4 rounded-lg bg-[#09090B] text-[12px] font-semibold text-white hover:bg-[#09090B]/90 transition-colors flex items-center gap-1.5">
-              <Plus className="w-3.5 h-3.5" /> New Campaign
-            </Link>
+      <div className="relative overflow-hidden rounded-2xl bg-subtle border border-border-subtle mb-8 animate-in">
+        <div className="absolute inset-0 dot-pattern opacity-50" />
+        <div className="absolute top-0 right-0 w-96 h-96 bg-lemon/5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2" />
+        
+        <div className="relative px-6 py-8 lg:px-8 lg:py-10">
+          <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
+            <div>
+              <div className="inline-flex items-center gap-2 px-2.5 py-1 rounded-full bg-lemon-muted text-lemon text-[11px] font-semibold uppercase tracking-wider mb-4">
+                <Sparkles className="w-3 h-3" />
+                Campaign Planner
+              </div>
+              <h1 className="text-2xl lg:text-3xl font-bold text-text mb-2">
+                Good morning ☀️
+              </h1>
+              <p className="text-text-muted text-[15px] max-w-md">
+                You have <span className="text-lemon font-medium">{active.length} active</span> and{" "}
+                <span className="text-text font-medium">{drafts.length} draft</span> campaigns running.
+              </p>
+            </div>
+            
+            <div className="flex items-center gap-2">
+              <button onClick={() => setShowTemplates(true)} className="h-10 px-4 btn btn-secondary">
+                <FileText className="w-4 h-4" />
+                <span>Templates</span>
+              </button>
+              <Link href="/campaigns/new" className="h-10 px-4 btn btn-primary">
+                <Plus className="w-4 h-4" />
+                <span>New Campaign</span>
+              </Link>
+            </div>
           </div>
         </div>
       </div>
 
       {/* Stats */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
-        <div className="anim-fade delay-1"><StatsCard label="Active" value={active.length} icon={Megaphone} color="green" /></div>
-        <div className="anim-fade delay-2"><StatsCard label="Upcoming" value={upcoming.length} icon={Rocket} color="blue" /></div>
-        <div className="anim-fade delay-3"><StatsCard label="Budget" value={`₱${budget.toLocaleString()}`} icon={DollarSign} color="gold" /></div>
+        <div className="card p-5 animate-in delay-1">
+          <div className="flex items-center justify-between mb-3">
+            <div className="w-10 h-10 rounded-xl bg-success-muted flex items-center justify-center">
+              <TrendingUp className="w-5 h-5 text-success" />
+            </div>
+          </div>
+          <p className="text-2xl font-bold text-text mb-0.5">{active.length}</p>
+          <p className="text-[13px] text-text-muted">Active campaigns</p>
+        </div>
+        
+        <div className="card p-5 animate-in delay-2">
+          <div className="flex items-center justify-between mb-3">
+            <div className="w-10 h-10 rounded-xl bg-info-muted flex items-center justify-center">
+              <Clock className="w-5 h-5 text-info" />
+            </div>
+          </div>
+          <p className="text-2xl font-bold text-text mb-0.5">{drafts.length}</p>
+          <p className="text-[13px] text-text-muted">In draft</p>
+        </div>
+        
+        <div className="card p-5 animate-in delay-3">
+          <div className="flex items-center justify-between mb-3">
+            <div className="w-10 h-10 rounded-xl bg-lemon-muted flex items-center justify-center">
+              <Target className="w-5 h-5 text-lemon" />
+            </div>
+          </div>
+          <p className="text-2xl font-bold text-text mb-0.5">₱{budget.toLocaleString()}</p>
+          <p className="text-[13px] text-text-muted">Total budget</p>
+        </div>
       </div>
 
       {/* Recent campaigns */}
-      <div className="anim-fade delay-4">
+      <div className="animate-in delay-4">
         <div className="flex items-center justify-between mb-4">
-          <h2 className="text-[15px] font-semibold text-primary">Recent Campaigns</h2>
+          <h2 className="text-[15px] font-semibold text-text">Recent campaigns</h2>
           {campaigns.length > 0 && (
-            <Link href="/campaigns" className="text-[12px] font-medium text-accent hover:text-accent/80 flex items-center gap-1 group">
-              View all <ArrowRight className="w-3 h-3 group-hover:translate-x-0.5 transition-transform" />
+            <Link href="/campaigns" className="text-[13px] font-medium text-text-muted hover:text-lemon flex items-center gap-1 transition-colors">
+              View all
+              <ArrowRight className="w-3.5 h-3.5" />
             </Link>
           )}
         </div>
 
         {recent.length === 0 ? (
-          <div className="glass rounded-2xl p-10 text-center">
-            <div className="w-12 h-12 rounded-xl bg-accent-soft flex items-center justify-center mx-auto mb-3">
-              <Sparkles className="w-5 h-5 text-accent" />
+          <div className="card p-12 text-center">
+            <div className="w-14 h-14 rounded-2xl bg-lemon-muted flex items-center justify-center mx-auto mb-4">
+              <Sparkles className="w-6 h-6 text-lemon" />
             </div>
-            <h3 className="text-[15px] font-semibold text-primary mb-1">No campaigns yet</h3>
-            <p className="text-[13px] text-muted mb-5 max-w-xs mx-auto">Create your first campaign to start planning.</p>
+            <h3 className="text-[16px] font-semibold text-text mb-1">No campaigns yet</h3>
+            <p className="text-[14px] text-text-muted mb-6 max-w-sm mx-auto">
+              Create your first campaign to start planning your marketing.
+            </p>
             <div className="flex justify-center gap-2">
-              <button onClick={() => setShowTemplates(true)} className="h-9 px-4 rounded-lg btn-ghost text-[12px] flex items-center gap-1.5">
-                <FileText className="w-3.5 h-3.5" /> Template
+              <button onClick={() => setShowTemplates(true)} className="h-10 px-4 btn btn-secondary">
+                <FileText className="w-4 h-4" />
+                Templates
               </button>
-              <Link href="/campaigns/new" className="h-9 px-4 rounded-lg btn-primary text-[12px] flex items-center gap-1.5">
-                <Plus className="w-3.5 h-3.5" /> Create Campaign
+              <Link href="/campaigns/new" className="h-10 px-4 btn btn-primary">
+                <Plus className="w-4 h-4" />
+                Create Campaign
               </Link>
             </div>
           </div>
         ) : (
-          <div className="space-y-2.5">
+          <div className="space-y-2">
             {recent.map((c, i) => (
-              <div key={c.id} className="anim-fade" style={{ animationDelay: `${Math.min((i + 1) * 0.06, 0.3)}s` }}>
+              <div key={c.id} className="animate-in" style={{ animationDelay: `${(i + 5) * 50}ms` }}>
                 <CampaignCard campaign={c} />
               </div>
             ))}

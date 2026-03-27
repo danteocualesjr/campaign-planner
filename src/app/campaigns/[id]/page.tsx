@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { useRouter, useParams } from "next/navigation";
 import Link from "next/link";
-import { ArrowLeft, AlertCircle, Edit3 } from "lucide-react";
+import { ArrowLeft, AlertCircle } from "lucide-react";
 import CampaignForm from "@/components/CampaignForm";
 import ConfirmModal from "@/components/ConfirmModal";
 import { getCampaignById, updateCampaign, deleteCampaign } from "@/lib/storage";
@@ -20,46 +20,39 @@ export default function Page() {
 
   if (!mounted) return (
     <div className="p-6 lg:p-8 max-w-3xl">
-      <div className="animate-pulse">
-        <div className="h-6 bg-card rounded w-32 mb-6" />
-        <div className="h-10 bg-card rounded-xl w-64 mb-6" />
-        <div className="h-[500px] bg-card rounded-2xl" />
-      </div>
+      <div className="h-6 bg-subtle rounded w-32 mb-6 animate-pulse" />
+      <div className="h-10 bg-subtle rounded-lg w-64 mb-6 animate-pulse" />
+      <div className="h-[500px] bg-subtle rounded-xl animate-pulse" />
     </div>
   );
 
   if (!campaign) return (
-    <div className="p-6 lg:p-8 max-w-3xl anim-fade">
-      <Link href="/campaigns" className="inline-flex items-center gap-1.5 text-[13px] text-muted hover:text-primary transition-colors mb-6">
-        <ArrowLeft className="w-4 h-4" /> Back to campaigns
+    <div className="p-6 lg:p-8 max-w-3xl animate-in">
+      <Link href="/campaigns" className="inline-flex items-center gap-1.5 text-[13px] text-text-muted hover:text-text transition-colors mb-6">
+        <ArrowLeft className="w-4 h-4" /> Back
       </Link>
-      <div className="glass rounded-2xl p-12 text-center">
-        <div className="w-14 h-14 rounded-2xl bg-red-soft flex items-center justify-center mx-auto mb-4">
-          <AlertCircle className="w-6 h-6 text-red" />
+      <div className="card p-12 text-center">
+        <div className="w-12 h-12 rounded-xl bg-danger-muted flex items-center justify-center mx-auto mb-4">
+          <AlertCircle className="w-5 h-5 text-danger" />
         </div>
-        <h2 className="text-[16px] font-semibold text-primary mb-2">Campaign not found</h2>
-        <p className="text-[13px] text-secondary">This campaign may have been deleted.</p>
+        <h2 className="text-[16px] font-semibold text-text mb-1">Campaign not found</h2>
+        <p className="text-[13px] text-text-muted">This campaign may have been deleted.</p>
       </div>
     </div>
   );
 
   return (
     <div className="p-6 lg:p-8 max-w-3xl">
-      <Link href="/campaigns" className="inline-flex items-center gap-1.5 text-[13px] text-muted hover:text-primary transition-colors mb-6 group anim-fade">
-        <ArrowLeft className="w-4 h-4 group-hover:-translate-x-0.5 transition-transform" /> Back to campaigns
+      <Link href="/campaigns" className="inline-flex items-center gap-1.5 text-[13px] text-text-muted hover:text-text transition-colors mb-6 animate-in">
+        <ArrowLeft className="w-4 h-4" /> Back
       </Link>
       
-      <div className="flex items-center gap-3 mb-6 anim-fade delay-1">
-        <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-accent/20 to-accent/5 flex items-center justify-center">
-          <Edit3 className="w-5 h-5 text-accent" />
-        </div>
-        <div>
-          <h1 className="text-[24px] font-bold text-primary tracking-tight">Edit Campaign</h1>
-          <p className="text-[13px] text-muted">{campaign.name}</p>
-        </div>
+      <div className="mb-6 animate-in delay-1">
+        <h1 className="text-xl font-bold text-text">Edit Campaign</h1>
+        <p className="text-[13px] text-text-muted mt-0.5">{campaign.name}</p>
       </div>
       
-      <div className="anim-fade delay-2">
+      <div className="animate-in delay-2">
         <CampaignForm 
           initialData={campaign} 
           onSave={(d) => { updateCampaign(id, d); router.push("/campaigns"); }} 
@@ -73,8 +66,7 @@ export default function Page() {
         onConfirm={() => { deleteCampaign(id); router.push("/campaigns"); }}
         title="Delete campaign?"
         message="This action cannot be undone. All campaign data will be permanently removed."
-        confirmText="Delete Campaign"
-        confirmVariant="danger"
+        confirmText="Delete"
       />
     </div>
   );
