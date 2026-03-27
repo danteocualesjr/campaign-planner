@@ -13,25 +13,15 @@ interface ConfirmModalProps {
   confirmVariant?: "danger" | "primary";
 }
 
-export default function ConfirmModal({
-  open,
-  onClose,
-  onConfirm,
-  title,
-  message,
-  confirmText = "Confirm",
-  confirmVariant = "danger",
-}: ConfirmModalProps) {
-  const confirmRef = useRef<HTMLButtonElement>(null);
+export default function ConfirmModal({ open, onClose, onConfirm, title, message, confirmText = "Confirm", confirmVariant = "danger" }: ConfirmModalProps) {
+  const ref = useRef<HTMLButtonElement>(null);
 
   useEffect(() => {
     if (open) {
-      confirmRef.current?.focus();
-      const handleEsc = (e: KeyboardEvent) => {
-        if (e.key === "Escape") onClose();
-      };
-      document.addEventListener("keydown", handleEsc);
-      return () => document.removeEventListener("keydown", handleEsc);
+      ref.current?.focus();
+      const esc = (e: KeyboardEvent) => { if (e.key === "Escape") onClose(); };
+      document.addEventListener("keydown", esc);
+      return () => document.removeEventListener("keydown", esc);
     }
   }, [open, onClose]);
 
@@ -39,64 +29,30 @@ export default function ConfirmModal({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-      <div 
-        className="absolute inset-0 bg-black/70 backdrop-blur-sm modal-backdrop" 
-        onClick={onClose}
-        aria-hidden="true"
-      />
-      <div 
-        className="relative w-full max-w-sm anim-scale"
-        role="alertdialog"
-        aria-modal="true"
-        aria-labelledby="modal-title"
-        aria-describedby="modal-description"
-      >
-        <div className="absolute inset-0 glass rounded-2xl" />
-        <div className="absolute top-0 left-0 w-32 h-32 bg-red/20 rounded-full blur-3xl" />
-        
-        <div className="relative p-6">
-          <button 
-            onClick={onClose} 
-            className="absolute top-4 right-4 p-1.5 rounded-lg text-muted hover:text-primary hover:bg-card transition-colors"
-            aria-label="Close"
-          >
+      <div className="absolute inset-0 bg-black/60 backdrop-blur-sm modal-backdrop" onClick={onClose} />
+      <div className="relative w-full max-w-sm glass rounded-xl anim-scale" role="alertdialog" aria-modal="true">
+        <div className="p-5">
+          <button onClick={onClose} className="absolute top-3 right-3 p-1 rounded-lg text-muted hover:text-primary" aria-label="Close">
             <X className="w-4 h-4" />
           </button>
-          
-          <div className="flex items-start gap-4 mb-4">
-            <div className="w-10 h-10 rounded-xl bg-red-soft flex items-center justify-center shrink-0">
-              <AlertTriangle className="w-5 h-5 text-red" />
+          <div className="flex items-start gap-3 mb-4">
+            <div className="w-9 h-9 rounded-lg bg-red-soft flex items-center justify-center shrink-0">
+              <AlertTriangle className="w-4 h-4 text-red" />
             </div>
             <div>
-              <h3 id="modal-title" className="text-[16px] font-semibold text-primary mb-1">
-                {title}
-              </h3>
-              <p id="modal-description" className="text-[13px] text-secondary leading-relaxed">
-                {message}
-              </p>
+              <h3 className="text-[14px] font-semibold text-primary mb-1">{title}</h3>
+              <p className="text-[12px] text-muted leading-relaxed">{message}</p>
             </div>
           </div>
-          
-          <div className="flex items-center justify-end gap-2 mt-6">
+          <div className="flex items-center justify-end gap-2">
+            <button onClick={onClose} className="h-8 px-3 rounded-lg btn-ghost text-[12px]">Cancel</button>
             <button
-              type="button"
-              onClick={onClose}
-              className="h-9 px-4 rounded-lg btn-ghost text-[13px]"
-            >
-              Cancel
-            </button>
-            <button
-              ref={confirmRef}
-              type="button"
+              ref={ref}
               onClick={() => { onConfirm(); onClose(); }}
-              className={`h-9 px-4 rounded-lg text-[13px] font-semibold transition-all ${
-                confirmVariant === "danger"
-                  ? "bg-red text-white hover:bg-red/90 focus-visible:ring-2 focus-visible:ring-red focus-visible:ring-offset-2 focus-visible:ring-offset-bg"
-                  : "btn-primary"
+              className={`h-8 px-3 rounded-lg text-[12px] font-semibold transition-all ${
+                confirmVariant === "danger" ? "bg-red text-white hover:bg-red/90" : "btn-primary"
               }`}
-            >
-              {confirmText}
-            </button>
+            >{confirmText}</button>
           </div>
         </div>
       </div>
