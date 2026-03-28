@@ -2,7 +2,7 @@
 
 import { useState, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { ArrowLeft, FileText, PlusCircle } from "lucide-react";
+import { ArrowLeft, FileText, PlusCircle, Sparkles } from "lucide-react";
 import Link from "next/link";
 import CampaignForm from "@/components/CampaignForm";
 import TemplatePickerModal from "@/components/TemplatePickerModal";
@@ -28,24 +28,37 @@ function Content() {
   const init = tplData ? tplData : dateP ? { id:"",createdAt:"",updatedAt:"",name:"",description:"",type:"social_media" as const,status:"draft" as const,productLines:[],channels:[],region:"all_branches" as const,startDate:dateP,endDate:new Date(new Date(dateP).getTime()+14*86400000).toISOString().split("T")[0],budget:0,notes:"",checklist:[] } as Campaign : undefined;
 
   return (
-    <div className="p-6 lg:p-8 max-w-3xl">
-      <Link href="/campaigns" className="inline-flex items-center gap-1.5 text-[13px] text-muted hover:text-primary transition-colors mb-6 group anim-fade">
-        <ArrowLeft className="w-4 h-4 group-hover:-translate-x-0.5 transition-transform" /> Back to campaigns
+    <div className="p-4 lg:p-8 max-w-4xl">
+      <Link href="/campaigns" className="inline-flex items-center gap-2 text-sm text-text-secondary hover:text-yellow transition-colors mb-6 animate-in">
+        <ArrowLeft className="w-4 h-4" /> Back to Campaigns
       </Link>
       
-      <div className="flex items-center justify-between mb-6 anim-fade delay-1">
-        <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-accent/20 to-accent/5 flex items-center justify-center">
-            <PlusCircle className="w-5 h-5 text-accent" />
+      {/* Hero header */}
+      <div className="relative overflow-hidden rounded-3xl glass mb-8 animate-in delay-1">
+        <div className="absolute inset-0 dot-grid opacity-30" />
+        <div className="absolute top-0 right-0 w-[300px] h-[300px] bg-gradient-to-br from-yellow/15 to-transparent rounded-full blur-3xl -translate-y-1/2 translate-x-1/3" />
+        
+        <div className="relative px-6 py-8 lg:px-8 lg:py-10">
+          <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
+            <div className="flex items-center gap-5">
+              <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-yellow-bright via-yellow to-orange flex items-center justify-center shadow-lg shadow-yellow/20">
+                <PlusCircle className="w-6 h-6 text-black" />
+              </div>
+              <div>
+                <h1 className="text-2xl lg:text-3xl font-bold text-text mb-1">New Campaign</h1>
+                <p className="text-text-secondary">Create a new marketing campaign</p>
+              </div>
+            </div>
+            
+            <button onClick={() => setShowTpl(true)} className="h-12 px-6 btn-secondary flex items-center gap-2 text-sm font-semibold w-fit">
+              <Sparkles className="w-4 h-4" />
+              Use Template
+            </button>
           </div>
-          <h1 className="text-[24px] font-bold text-primary tracking-tight">New Campaign</h1>
         </div>
-        <button onClick={() => setShowTpl(true)} className="h-10 px-4 rounded-xl btn-ghost text-[13px] flex items-center gap-2">
-          <FileText className="w-4 h-4" /> Template
-        </button>
       </div>
       
-      <div className="anim-fade delay-2">
+      <div className="animate-in delay-2">
         <CampaignForm key={tplData?.name || "new"} initialData={init} onSave={onSave} />
       </div>
       
@@ -57,11 +70,11 @@ function Content() {
 export default function Page() {
   return (
     <Suspense fallback={
-      <div className="p-6 lg:p-8 max-w-3xl">
+      <div className="p-4 lg:p-8 max-w-4xl">
         <div className="animate-pulse">
-          <div className="h-6 bg-card rounded w-32 mb-6" />
-          <div className="h-10 bg-card rounded-xl w-48 mb-6" />
-          <div className="h-[500px] bg-card rounded-2xl" />
+          <div className="h-8 bg-card rounded-lg w-32 mb-6" />
+          <div className="h-32 bg-card rounded-3xl mb-6" />
+          <div className="h-[600px] bg-card rounded-3xl" />
         </div>
       </div>
     }>
