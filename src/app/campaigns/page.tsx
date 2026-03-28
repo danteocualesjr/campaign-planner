@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { Plus, Search, X, Sparkles, Filter } from "lucide-react";
+import { Plus, Search, X, Sparkles, SlidersHorizontal } from "lucide-react";
 import { Campaign, CampaignStatus, CampaignType, ProductLine } from "@/lib/types";
 import { getCampaigns } from "@/lib/storage";
 import {
@@ -27,12 +27,12 @@ export default function CampaignsPage() {
 
   if (!mounted) {
     return (
-      <div className="p-6 lg:p-10">
-        <div className="h-12 skeleton w-48 mb-8" />
-        <div className="h-12 skeleton mb-6" />
+      <div>
+        <div className="h-20 skeleton mb-12" />
+        <div className="h-12 skeleton mb-8" />
         <div className="space-y-4">
           {[1, 2, 3].map((i) => (
-            <div key={i} className="h-24 skeleton" />
+            <div key={i} className="h-36 skeleton" style={{ borderRadius: "2.5rem" }} />
           ))}
         </div>
       </div>
@@ -54,91 +54,89 @@ export default function CampaignsPage() {
 
   const hasFilters = statusF !== "all" || typeF !== "all" || prodF !== "all" || search;
 
+  const selectClass =
+    "input h-10 w-auto px-4 text-sm bg-surface-lowest cursor-pointer border border-outline-variant/20 rounded-full";
+
   return (
-    <div className="p-6 lg:p-10 max-w-6xl">
+    <>
       {/* Header */}
-      <section className="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-6 mb-10 animate-enter">
+      <header className="mb-12 flex items-end justify-between animate-enter">
         <div>
-          <p className="overline mb-2">All Campaigns</p>
-          <h1 className="display text-text-primary">Campaigns</h1>
-          <p className="body text-text-secondary mt-2">
-            {campaigns.length} total · {campaigns.filter((c) => c.status === "active").length}{" "}
-            active
+          <p className="text-[11px] uppercase tracking-[0.2em] font-bold text-sl400 mb-2">
+            All Campaigns
+          </p>
+          <h1 className="text-[3.5rem] font-bold tracking-tight text-on-bg leading-none">
+            Campaigns
+          </h1>
+          <p className="text-lg text-on-surface-variant font-medium mt-3">
+            {campaigns.length} total ·{" "}
+            {campaigns.filter((c) => c.status === "active").length} active
           </p>
         </div>
-        <Link href="/campaigns/new" className="btn btn-primary btn-md w-fit">
-          <Plus className="w-5 h-5" />
+        <Link href="/campaigns/new" className="btn-cta px-5 py-2.5 rounded-full text-sm">
+          <Plus className="w-4 h-4" />
           New Campaign
         </Link>
-      </section>
+      </header>
 
       {/* Filters */}
       {campaigns.length > 0 && (
-        <section className="card p-4 mb-8 animate-enter delay-1">
+        <div className="card-surface p-4 mb-8 animate-enter delay-1">
           <div className="flex flex-col lg:flex-row gap-4">
-            {/* Search */}
             <div className="relative flex-1">
-              <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-text-muted" />
+              <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-sl400" />
               <input
                 type="text"
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
                 placeholder="Search campaigns..."
-                className="input pl-12"
+                className="input pl-11 h-12 bg-surface-lowest border border-outline-variant/20 rounded-full"
               />
               {search && (
                 <button
                   onClick={() => setSearch("")}
-                  className="absolute right-4 top-1/2 -translate-y-1/2 w-6 h-6 rounded-md bg-bg-tertiary flex items-center justify-center text-text-muted hover:text-text-primary"
+                  className="absolute right-4 top-1/2 -translate-y-1/2 w-6 h-6 rounded-full bg-sl200 flex items-center justify-center text-sl500 hover:text-sl900"
                 >
-                  <X className="w-4 h-4" />
+                  <X className="w-3 h-3" />
                 </button>
               )}
             </div>
 
-            {/* Filter dropdowns */}
             <div className="flex items-center gap-3 flex-wrap">
-              <div className="flex items-center gap-2 text-text-muted">
-                <Filter className="w-4 h-4" />
-                <span className="text-sm font-medium">Filters:</span>
+              <div className="flex items-center gap-2 px-3 text-sl400">
+                <SlidersHorizontal className="w-4 h-4" />
               </div>
 
               <select
                 value={statusF}
                 onChange={(e) => setStatusF(e.target.value as CampaignStatus | "all")}
-                className="input h-10 w-auto px-3 text-sm"
+                className={selectClass}
               >
                 <option value="all">All Status</option>
                 {Object.entries(CAMPAIGN_STATUS_LABELS).map(([k, v]) => (
-                  <option key={k} value={k}>
-                    {v}
-                  </option>
+                  <option key={k} value={k}>{v}</option>
                 ))}
               </select>
 
               <select
                 value={typeF}
                 onChange={(e) => setTypeF(e.target.value as CampaignType | "all")}
-                className="input h-10 w-auto px-3 text-sm"
+                className={selectClass}
               >
                 <option value="all">All Types</option>
                 {Object.entries(CAMPAIGN_TYPE_LABELS).map(([k, v]) => (
-                  <option key={k} value={k}>
-                    {v}
-                  </option>
+                  <option key={k} value={k}>{v}</option>
                 ))}
               </select>
 
               <select
                 value={prodF}
                 onChange={(e) => setProdF(e.target.value as ProductLine | "all")}
-                className="input h-10 w-auto px-3 text-sm"
+                className={selectClass}
               >
                 <option value="all">All Products</option>
                 {Object.entries(PRODUCT_LINE_LABELS).map(([k, v]) => (
-                  <option key={k} value={k}>
-                    {v}
-                  </option>
+                  <option key={k} value={k}>{v}</option>
                 ))}
               </select>
 
@@ -150,7 +148,7 @@ export default function CampaignsPage() {
                     setTypeF("all");
                     setProdF("all");
                   }}
-                  className="btn btn-ghost btn-sm text-danger"
+                  className="btn-ghost px-4 py-2 text-sm text-md-error"
                 >
                   <X className="w-4 h-4" />
                   Clear
@@ -158,40 +156,39 @@ export default function CampaignsPage() {
               )}
             </div>
           </div>
-        </section>
+        </div>
       )}
 
-      {/* Results */}
       {hasFilters && filtered.length > 0 && (
-        <p className="body text-text-secondary mb-4">
-          Showing {filtered.length} of {campaigns.length} campaigns
+        <p className="text-sm text-on-surface-variant mb-4 px-2">
+          Showing {filtered.length} of {campaigns.length}
         </p>
       )}
 
-      {/* List */}
-      <section className="animate-enter delay-2">
+      {/* Campaign List */}
+      <section className="space-y-4 animate-enter delay-2">
         {campaigns.length === 0 ? (
-          <div className="card empty-state">
-            <div className="w-16 h-16 rounded-2xl bg-accent/10 flex items-center justify-center mb-6">
-              <Sparkles className="w-8 h-8 text-accent" />
+          <div className="card-surface p-16 flex flex-col items-center justify-center text-center">
+            <div className="w-16 h-16 rounded-full bg-primary-container/30 flex items-center justify-center mb-6">
+              <Sparkles className="w-8 h-8 text-md-primary" />
             </div>
-            <h3 className="title text-text-primary mb-2">No campaigns yet</h3>
-            <p className="body text-text-secondary mb-8 max-w-sm">
+            <h3 className="text-xl font-bold text-on-bg mb-2">No campaigns yet</h3>
+            <p className="text-on-surface-variant mb-8 max-w-sm">
               Create your first campaign to start tracking your marketing initiatives.
             </p>
-            <Link href="/campaigns/new" className="btn btn-primary btn-md">
-              <Plus className="w-5 h-5" />
+            <Link href="/campaigns/new" className="btn-cta px-6 py-3 rounded-full text-sm">
+              <Plus className="w-4 h-4" />
               Create Campaign
             </Link>
           </div>
         ) : filtered.length === 0 ? (
-          <div className="card empty-state">
-            <div className="w-16 h-16 rounded-2xl bg-bg-tertiary flex items-center justify-center mb-6">
-              <Search className="w-8 h-8 text-text-muted" />
+          <div className="card-surface p-16 flex flex-col items-center justify-center text-center">
+            <div className="w-16 h-16 rounded-full bg-surface-container flex items-center justify-center mb-6">
+              <Search className="w-8 h-8 text-sl400" />
             </div>
-            <h3 className="title text-text-primary mb-2">No matches</h3>
-            <p className="body text-text-secondary mb-6">
-              No campaigns match your current filters.
+            <h3 className="text-xl font-bold text-on-bg mb-2">No matches</h3>
+            <p className="text-on-surface-variant mb-6">
+              No campaigns match your filters.
             </p>
             <button
               onClick={() => {
@@ -200,25 +197,23 @@ export default function CampaignsPage() {
                 setTypeF("all");
                 setProdF("all");
               }}
-              className="btn btn-secondary btn-md"
+              className="btn-outline px-6 py-3 text-sm"
             >
-              Clear filters
+              Clear all filters
             </button>
           </div>
         ) : (
-          <div className="space-y-3">
-            {filtered.map((campaign, i) => (
-              <div
-                key={campaign.id}
-                className="animate-enter"
-                style={{ animationDelay: `${200 + i * 40}ms` }}
-              >
-                <CampaignCard campaign={campaign} />
-              </div>
-            ))}
-          </div>
+          filtered.map((campaign, i) => (
+            <div
+              key={campaign.id}
+              className="animate-enter"
+              style={{ animationDelay: `${200 + i * 50}ms` }}
+            >
+              <CampaignCard campaign={campaign} />
+            </div>
+          ))
         )}
       </section>
-    </div>
+    </>
   );
 }

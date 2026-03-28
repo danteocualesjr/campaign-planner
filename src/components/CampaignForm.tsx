@@ -66,6 +66,9 @@ export default function CampaignForm({ initialData, onSave, onDelete }: Props) {
     setNewTask("");
   };
 
+  const inputClass = "input input-rect h-12 text-sm bg-surface-lowest border border-outline-variant/20";
+  const labelClass = "meta-label mb-2 block";
+
   return (
     <form
       onSubmit={(e) => {
@@ -74,117 +77,111 @@ export default function CampaignForm({ initialData, onSave, onDelete }: Props) {
       }}
       className="space-y-6"
     >
-      {/* Basic Info */}
-      <section className="card p-6">
-        <h3 className="title text-text-primary mb-6">Campaign Details</h3>
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+      {/* Details */}
+      <section className="card-surface p-8">
+        <h3 className="text-lg font-bold text-on-bg mb-6">Campaign Details</h3>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
           <div>
-            <label className="overline mb-2 block">Name *</label>
+            <label className={labelClass}>Name *</label>
             <input
               required
               type="text"
               value={form.name}
               onChange={(e) => set("name", e.target.value)}
               placeholder="Summer Frozen Promo"
-              className="input"
+              className={inputClass}
             />
           </div>
           <div>
-            <label className="overline mb-2 block">Type</label>
+            <label className={labelClass}>Type</label>
             <select
               value={form.type}
               onChange={(e) => set("type", e.target.value as CampaignType)}
-              className="input"
+              className={inputClass}
             >
               {Object.entries(CAMPAIGN_TYPE_LABELS).map(([k, v]) => (
-                <option key={k} value={k}>
-                  {v}
-                </option>
+                <option key={k} value={k}>{v}</option>
               ))}
             </select>
           </div>
         </div>
-        <div className="mt-4">
-          <label className="overline mb-2 block">Description</label>
+        <div className="mt-5">
+          <label className={labelClass}>Description</label>
           <textarea
             rows={3}
             value={form.description}
             onChange={(e) => set("description", e.target.value)}
             placeholder="Campaign objectives and key messaging..."
-            className="input h-auto py-3 resize-none"
+            className={inputClass + " h-auto py-3 resize-none"}
           />
         </div>
       </section>
 
       {/* Schedule & Budget */}
-      <section className="card p-6">
-        <h3 className="title text-text-primary mb-6">Schedule & Budget</h3>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+      <section className="card-surface p-8">
+        <h3 className="text-lg font-bold text-on-bg mb-6">Schedule & Budget</h3>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
           <div>
-            <label className="overline mb-2 block">Start Date *</label>
+            <label className={labelClass}>Start Date *</label>
             <input
               required
               type="date"
               value={form.startDate}
               onChange={(e) => set("startDate", e.target.value)}
-              className="input"
+              className={inputClass}
             />
           </div>
           <div>
-            <label className="overline mb-2 block">End Date *</label>
+            <label className={labelClass}>End Date *</label>
             <input
               required
               type="date"
               value={form.endDate}
               onChange={(e) => set("endDate", e.target.value)}
-              className="input"
+              className={inputClass}
             />
           </div>
           <div>
-            <label className="overline mb-2 block">Budget (₱)</label>
+            <label className={labelClass}>Budget (₱)</label>
             <input
               type="number"
               min={0}
               value={form.budget || ""}
               onChange={(e) => set("budget", Number(e.target.value) || 0)}
               placeholder="0"
-              className="input"
+              className={inputClass}
             />
           </div>
           <div>
-            <label className="overline mb-2 block">Status</label>
+            <label className={labelClass}>Status</label>
             <select
               value={form.status}
               onChange={(e) => set("status", e.target.value as CampaignStatus)}
-              className="input"
+              className={inputClass}
             >
               {Object.entries(CAMPAIGN_STATUS_LABELS).map(([k, v]) => (
-                <option key={k} value={k}>
-                  {v}
-                </option>
+                <option key={k} value={k}>{v}</option>
               ))}
             </select>
           </div>
         </div>
-        <div className="mt-4">
-          <label className="overline mb-2 block">Region</label>
+        <div className="mt-5">
+          <label className={labelClass}>Region</label>
           <select
             value={form.region}
             onChange={(e) => set("region", e.target.value as Region)}
-            className="input"
+            className={inputClass}
           >
             {Object.entries(REGION_LABELS).map(([k, v]) => (
-              <option key={k} value={k}>
-                {v}
-              </option>
+              <option key={k} value={k}>{v}</option>
             ))}
           </select>
         </div>
       </section>
 
       {/* Product Lines */}
-      <section className="card p-6">
-        <h3 className="title text-text-primary mb-6">Product Lines</h3>
+      <section className="card-surface p-8">
+        <h3 className="text-lg font-bold text-on-bg mb-6">Product Lines</h3>
         <div className="flex flex-wrap gap-2">
           {Object.entries(PRODUCT_LINE_LABELS).map(([k, v]) => {
             const on = form.productLines.includes(k as ProductLine);
@@ -193,9 +190,13 @@ export default function CampaignForm({ initialData, onSave, onDelete }: Props) {
                 type="button"
                 key={k}
                 onClick={() => set("productLines", toggle(form.productLines, k as ProductLine))}
-                className={`btn btn-sm ${on ? "btn-primary" : "btn-secondary"}`}
+                className={`px-4 py-2.5 rounded-full text-sm font-semibold transition-all active:scale-95 ${
+                  on
+                    ? "bg-primary-container text-on-primary-container"
+                    : "bg-surface-container text-on-surface-variant hover:bg-surface-high"
+                }`}
               >
-                {on && <Check className="w-4 h-4" />}
+                {on && <Check className="w-4 h-4 inline mr-1" />}
                 {v}
               </button>
             );
@@ -204,8 +205,8 @@ export default function CampaignForm({ initialData, onSave, onDelete }: Props) {
       </section>
 
       {/* Channels */}
-      <section className="card p-6">
-        <h3 className="title text-text-primary mb-6">Channels</h3>
+      <section className="card-surface p-8">
+        <h3 className="text-lg font-bold text-on-bg mb-6">Channels</h3>
         <div className="flex flex-wrap gap-2">
           {Object.entries(CHANNEL_LABELS).map(([k, v]) => {
             const on = form.channels.includes(k as Channel);
@@ -214,9 +215,13 @@ export default function CampaignForm({ initialData, onSave, onDelete }: Props) {
                 type="button"
                 key={k}
                 onClick={() => set("channels", toggle(form.channels, k as Channel))}
-                className={`btn btn-sm ${on ? "btn-primary" : "btn-secondary"}`}
+                className={`px-4 py-2.5 rounded-full text-sm font-semibold transition-all active:scale-95 ${
+                  on
+                    ? "bg-primary-container text-on-primary-container"
+                    : "bg-surface-container text-on-surface-variant hover:bg-surface-high"
+                }`}
               >
-                {on && <Check className="w-4 h-4" />}
+                {on && <Check className="w-4 h-4 inline mr-1" />}
                 {v}
               </button>
             );
@@ -225,26 +230,26 @@ export default function CampaignForm({ initialData, onSave, onDelete }: Props) {
       </section>
 
       {/* Notes */}
-      <section className="card p-6">
-        <h3 className="title text-text-primary mb-6">Notes</h3>
+      <section className="card-surface p-8">
+        <h3 className="text-lg font-bold text-on-bg mb-6">Notes</h3>
         <textarea
           rows={4}
           value={form.notes}
           onChange={(e) => set("notes", e.target.value)}
           placeholder="Internal notes, creative briefs, links..."
-          className="input h-auto py-3 resize-none"
+          className={inputClass + " h-auto py-3 resize-none"}
         />
       </section>
 
       {/* Checklist */}
-      <section className="card p-6">
-        <h3 className="title text-text-primary mb-6">Task Checklist</h3>
+      <section className="card-surface p-8">
+        <h3 className="text-lg font-bold text-on-bg mb-6">Task Checklist</h3>
         {form.checklist.length > 0 && (
-          <div className="space-y-2 mb-4">
+          <div className="space-y-2 mb-5">
             {form.checklist.map((item) => (
               <div
                 key={item.id}
-                className="flex items-center gap-3 group p-3 rounded-xl bg-bg-primary border border-border-primary"
+                className="flex items-center gap-3 group p-3 rounded-xl bg-surface-low"
               >
                 <button
                   type="button"
@@ -258,15 +263,17 @@ export default function CampaignForm({ initialData, onSave, onDelete }: Props) {
                   }
                   className={`w-5 h-5 rounded flex items-center justify-center flex-shrink-0 transition-all ${
                     item.done
-                      ? "bg-success text-white"
-                      : "border-2 border-border-secondary hover:border-accent"
+                      ? "bg-green-500 text-white"
+                      : "border-2 border-outline-variant hover:border-primary-container"
                   }`}
                 >
                   {item.done && <Check className="w-3 h-3" />}
                 </button>
                 <span
-                  className={`flex-1 body ${
-                    item.done ? "line-through text-text-muted" : "text-text-primary"
+                  className={`flex-1 text-sm ${
+                    item.done
+                      ? "line-through text-sl400"
+                      : "text-on-bg"
                   }`}
                 >
                   {item.text}
@@ -279,9 +286,9 @@ export default function CampaignForm({ initialData, onSave, onDelete }: Props) {
                       form.checklist.filter((c) => c.id !== item.id)
                     )
                   }
-                  className="opacity-0 group-hover:opacity-100 w-8 h-8 rounded-lg bg-danger/10 flex items-center justify-center text-danger transition-all hover:bg-danger/20"
+                  className="opacity-0 group-hover:opacity-100 w-8 h-8 rounded-full bg-error-container flex items-center justify-center text-md-error transition-all"
                 >
-                  <Trash2 className="w-4 h-4" />
+                  <Trash2 className="w-3.5 h-3.5" />
                 </button>
               </div>
             ))}
@@ -299,23 +306,27 @@ export default function CampaignForm({ initialData, onSave, onDelete }: Props) {
               }
             }}
             placeholder="Add a new task..."
-            className="input flex-1"
+            className={inputClass + " flex-1"}
           />
-          <button type="button" onClick={addTask} className="btn btn-secondary btn-md w-12">
+          <button
+            type="button"
+            onClick={addTask}
+            className="w-12 h-12 rounded-xl bg-surface-container flex items-center justify-center text-on-surface-variant hover:bg-primary-container hover:text-on-primary-container transition-colors"
+          >
             <Plus className="w-5 h-5" />
           </button>
         </div>
       </section>
 
       {/* Actions */}
-      <section className="card p-6 flex flex-col sm:flex-row items-center gap-3">
-        <button type="submit" className="btn btn-primary btn-lg w-full sm:w-auto">
+      <section className="card-surface p-8 flex flex-col sm:flex-row items-center gap-3">
+        <button type="submit" className="btn-cta px-8 py-3.5 rounded-full text-sm w-full sm:w-auto">
           {initialData ? "Save Changes" : "Create Campaign"}
         </button>
         <button
           type="button"
           onClick={() => router.back()}
-          className="btn btn-secondary btn-lg w-full sm:w-auto"
+          className="btn-outline px-6 py-3.5 text-sm w-full sm:w-auto"
         >
           Cancel
         </button>
@@ -323,9 +334,9 @@ export default function CampaignForm({ initialData, onSave, onDelete }: Props) {
           <button
             type="button"
             onClick={onDelete}
-            className="btn btn-danger btn-lg w-full sm:w-auto sm:ml-auto"
+            className="sm:ml-auto inline-flex items-center justify-center gap-2 px-5 py-3.5 bg-md-error text-white font-bold text-sm rounded-full hover:opacity-90 transition-opacity w-full sm:w-auto"
           >
-            <Trash2 className="w-5 h-5" />
+            <Trash2 className="w-4 h-4" />
             Delete
           </button>
         )}

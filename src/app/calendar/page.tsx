@@ -22,9 +22,9 @@ export default function CalendarPage() {
 
   if (!mounted) {
     return (
-      <div className="p-6 lg:p-10">
-        <div className="h-12 skeleton w-48 mb-8" />
-        <div className="h-[600px] skeleton" />
+      <div>
+        <div className="h-20 skeleton mb-12" />
+        <div className="h-[600px] skeleton" style={{ borderRadius: "2rem" }} />
       </div>
     );
   }
@@ -38,64 +38,79 @@ export default function CalendarPage() {
   });
 
   return (
-    <div className="p-6 lg:p-10 max-w-6xl">
+    <>
       {/* Header */}
-      <section className="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-6 mb-10 animate-enter">
+      <header className="mb-12 flex flex-col lg:flex-row lg:items-end lg:justify-between gap-6 animate-enter">
         <div>
-          <p className="overline mb-2">Schedule</p>
-          <h1 className="display text-text-primary">Calendar</h1>
-          <p className="body text-text-secondary mt-2">
+          <p className="text-[11px] uppercase tracking-[0.2em] font-bold text-sl400 mb-2">
+            Schedule
+          </p>
+          <h1 className="text-[3.5rem] font-bold tracking-tight text-on-bg leading-none">
+            Calendar
+          </h1>
+          <p className="text-lg text-on-surface-variant font-medium mt-3">
             {thisMonth.length} campaigns in {format(cur, "MMMM yyyy")}
           </p>
         </div>
 
         <div className="flex items-center gap-3">
-          <div className="flex items-center gap-1">
+          <div className="flex items-center bg-surface-lowest rounded-full border border-outline-variant/20">
             <button
               onClick={() => setCur(subMonths(cur, 1))}
-              className="btn btn-secondary btn-sm w-10 h-10 p-0"
+              className="w-10 h-10 flex items-center justify-center text-sl500 hover:text-sl900 transition-colors rounded-full"
             >
               <ChevronLeft className="w-5 h-5" />
             </button>
-            <div className="min-w-[160px] text-center">
-              <span className="title text-text-primary">{format(cur, "MMMM yyyy")}</span>
-            </div>
+            <span className="min-w-[160px] text-center text-sm font-bold text-on-bg">
+              {format(cur, "MMMM yyyy")}
+            </span>
             <button
               onClick={() => setCur(addMonths(cur, 1))}
-              className="btn btn-secondary btn-sm w-10 h-10 p-0"
+              className="w-10 h-10 flex items-center justify-center text-sl500 hover:text-sl900 transition-colors rounded-full"
             >
               <ChevronRight className="w-5 h-5" />
             </button>
           </div>
-          <button onClick={() => setCur(new Date())} className="btn btn-primary btn-sm">
+          <button
+            onClick={() => setCur(new Date())}
+            className="btn-cta px-5 py-2.5 rounded-full text-sm"
+          >
             Today
           </button>
         </div>
-      </section>
+      </header>
 
-      {/* Calendar */}
+      {/* Calendar Grid */}
       <section className="animate-enter delay-1">
         <CalendarGrid
           currentDate={cur}
           campaigns={campaigns}
-          onDayClick={(d) => router.push(`/campaigns/new?date=${format(d, "yyyy-MM-dd")}`)}
+          onDayClick={(d) =>
+            router.push(`/campaigns/new?date=${format(d, "yyyy-MM-dd")}`)
+          }
         />
       </section>
 
       {/* Legend */}
-      <section className="card p-4 mt-6 animate-enter delay-2">
+      <div className="card-surface p-5 mt-6 animate-enter delay-2">
         <div className="flex flex-wrap items-center justify-center gap-6">
           {Object.entries(CAMPAIGN_TYPE_LABELS).map(([k, v]) => {
-            const color = CAMPAIGN_TYPE_COLORS[k as keyof typeof CAMPAIGN_TYPE_COLORS];
+            const tagStyle = {
+              social_media: "type-social",
+              email: "type-email",
+              in_store_promo: "type-promo",
+              franchise_event: "type-event",
+              product_launch: "type-launch",
+            }[k] || "";
             return (
               <div key={k} className="flex items-center gap-2">
-                <div className={`w-3 h-3 rounded ${color.bg}`} />
-                <span className="caption">{v}</span>
+                <div className={`w-3 h-3 rounded-full ${tagStyle}`} style={{ background: "currentColor" }} />
+                <span className="text-sm text-on-surface-variant">{v}</span>
               </div>
             );
           })}
         </div>
-      </section>
-    </div>
+      </div>
+    </>
   );
 }

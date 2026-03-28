@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { Plus, FileText, ArrowRight, TrendingUp, Clock, DollarSign, ChevronRight, Sparkles } from "lucide-react";
+import { Plus, FileText, Rocket, PenLine, Wallet, CirclePlus, Quote, TrendingUp } from "lucide-react";
 import { Campaign, CampaignTemplate } from "@/lib/types";
 import { getCampaigns, createCampaign } from "@/lib/storage";
 import CampaignCard from "@/components/CampaignCard";
@@ -44,17 +44,13 @@ export default function Dashboard() {
 
   if (!mounted) {
     return (
-      <div className="p-6 lg:p-10">
-        <div className="h-40 skeleton mb-8" />
-        <div className="grid grid-cols-3 gap-6 mb-8">
-          {[1, 2, 3].map((i) => (
-            <div key={i} className="h-28 skeleton" />
-          ))}
+      <div>
+        <div className="h-40 skeleton mb-12" />
+        <div className="grid grid-cols-3 gap-8 mb-16">
+          {[1, 2, 3].map((i) => <div key={i} className="h-44 skeleton" />)}
         </div>
         <div className="space-y-4">
-          {[1, 2, 3].map((i) => (
-            <div key={i} className="h-24 skeleton" />
-          ))}
+          {[1, 2].map((i) => <div key={i} className="h-36 skeleton" style={{ borderRadius: "2.5rem" }} />)}
         </div>
       </div>
     );
@@ -68,120 +64,178 @@ export default function Dashboard() {
   const recent = campaigns.slice(0, 5);
 
   return (
-    <div className="p-6 lg:p-10 max-w-6xl">
-      {/* Hero */}
-      <section className="mb-12 animate-enter">
-        <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-6">
+    <>
+      {/* Welcome Header */}
+      <header className="mb-12 flex items-end justify-between animate-enter">
+        <div className="max-w-2xl">
+          <h1 className="text-[3.5rem] font-bold tracking-tight text-on-bg leading-none mb-4">
+            {greeting},{" "}
+            <span className="text-md-primary italic">Alex.</span>
+          </h1>
+          <p className="text-lg text-on-surface-variant font-medium">
+            You have{" "}
+            <span className="text-on-bg font-bold">{active.length} active</span> and{" "}
+            <span className="text-on-bg font-bold">{drafts.length} draft</span> campaigns
+            running. Your editorial queue looks clear for the next 48 hours.
+          </p>
+        </div>
+        <div className="hidden lg:flex items-center gap-3 pb-2">
+          <button onClick={() => setShowTemplates(true)} className="btn-outline px-5 py-2.5 text-sm">
+            <FileText className="w-4 h-4" />
+            Templates
+          </button>
+          <Link href="/campaigns/new" className="btn-cta px-5 py-2.5 rounded-full text-sm">
+            <Plus className="w-4 h-4" />
+            New Campaign
+          </Link>
+        </div>
+      </header>
+
+      {/* Metric Grid */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-16">
+        {/* Active */}
+        <div className="card-surface p-8 flex flex-col justify-between animate-enter delay-1">
+          <div className="flex items-start justify-between mb-8">
+            <div className="w-12 h-12 rounded-2xl bg-tertiary-fixed flex items-center justify-center text-md-tertiary">
+              <Rocket className="w-6 h-6" />
+            </div>
+            <span className="text-[11px] font-bold uppercase tracking-widest text-on-surface-variant/60">
+              Live Now
+            </span>
+          </div>
           <div>
-            <p className="overline mb-2">Dashboard</p>
-            <h1 className="display text-text-primary mb-3">{greeting}</h1>
-            <p className="body text-text-secondary max-w-md">
-              You have{" "}
-              <span className="text-accent font-semibold">{active.length} active</span> and{" "}
-              <span className="text-text-primary font-semibold">{drafts.length} draft</span>{" "}
-              campaigns running.
-            </p>
-          </div>
-          <div className="flex items-center gap-3">
-            <button onClick={() => setShowTemplates(true)} className="btn btn-secondary btn-md">
-              <FileText className="w-5 h-5" />
-              Templates
-            </button>
-            <Link href="/campaigns/new" className="btn btn-primary btn-md">
-              <Plus className="w-5 h-5" />
-              New Campaign
-            </Link>
-          </div>
-        </div>
-      </section>
-
-      {/* Stats */}
-      <section className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-12">
-        <div className="card p-6 animate-enter delay-1">
-          <div className="flex items-center gap-4">
-            <div className="w-12 h-12 rounded-xl bg-success/10 flex items-center justify-center">
-              <TrendingUp className="w-6 h-6 text-success" />
-            </div>
-            <div>
-              <p className="text-3xl font-bold text-text-primary">{active.length}</p>
-              <p className="caption">Active campaigns</p>
-            </div>
+            <span className="text-5xl font-black text-on-bg tracking-tighter">
+              {active.length}
+            </span>
+            <h3 className="text-on-surface-variant font-medium mt-1">Active campaigns</h3>
           </div>
         </div>
 
-        <div className="card p-6 animate-enter delay-2">
-          <div className="flex items-center gap-4">
-            <div className="w-12 h-12 rounded-xl bg-info/10 flex items-center justify-center">
-              <Clock className="w-6 h-6 text-info" />
+        {/* Drafts */}
+        <div className="card-surface p-8 flex flex-col justify-between animate-enter delay-2">
+          <div className="flex items-start justify-between mb-8">
+            <div className="w-12 h-12 rounded-2xl bg-secondary-container flex items-center justify-center text-md-secondary">
+              <PenLine className="w-6 h-6" />
             </div>
-            <div>
-              <p className="text-3xl font-bold text-text-primary">{drafts.length}</p>
-              <p className="caption">In draft</p>
-            </div>
+            <span className="text-[11px] font-bold uppercase tracking-widest text-on-surface-variant/60">
+              In Progress
+            </span>
+          </div>
+          <div>
+            <span className="text-5xl font-black text-on-bg tracking-tighter">
+              {drafts.length}
+            </span>
+            <h3 className="text-on-surface-variant font-medium mt-1">In draft</h3>
           </div>
         </div>
 
-        <div className="card p-6 animate-enter delay-3">
-          <div className="flex items-center gap-4">
-            <div className="w-12 h-12 rounded-xl bg-accent/10 flex items-center justify-center">
-              <DollarSign className="w-6 h-6 text-accent" />
+        {/* Budget */}
+        <div className="card-surface p-8 flex flex-col justify-between animate-enter delay-3">
+          <div className="flex items-start justify-between mb-8">
+            <div className="w-12 h-12 rounded-2xl bg-primary-container flex items-center justify-center text-on-primary-container">
+              <Wallet className="w-6 h-6" />
             </div>
-            <div>
-              <p className="text-3xl font-bold text-text-primary">₱{budget.toLocaleString()}</p>
-              <p className="caption">Total budget</p>
-            </div>
+            <span className="text-[11px] font-bold uppercase tracking-widest text-on-surface-variant/60">
+              Allocation
+            </span>
+          </div>
+          <div>
+            <span className="text-5xl font-black text-on-bg tracking-tighter">
+              ₱{budget.toLocaleString()}
+            </span>
+            <h3 className="text-on-surface-variant font-medium mt-1">Total budget</h3>
           </div>
         </div>
-      </section>
+      </div>
 
       {/* Recent Campaigns */}
-      <section className="animate-enter delay-4">
-        <div className="flex items-center justify-between mb-6">
-          <h2 className="headline text-text-primary">Recent Campaigns</h2>
+      <section className="space-y-6 animate-enter delay-4">
+        <div className="flex items-center justify-between px-2">
+          <h2 className="text-2xl font-bold tracking-tight text-on-bg">Recent Campaigns</h2>
           {campaigns.length > 0 && (
             <Link
               href="/campaigns"
-              className="flex items-center gap-2 text-text-secondary hover:text-accent transition-colors"
+              className="text-sm font-bold text-md-primary hover:underline"
             >
-              <span className="body">View all</span>
-              <ArrowRight className="w-4 h-4" />
+              View all archive
             </Link>
           )}
         </div>
 
-        {recent.length === 0 ? (
-          <div className="card empty-state">
-            <div className="w-16 h-16 rounded-2xl bg-accent/10 flex items-center justify-center mb-6">
-              <Sparkles className="w-8 h-8 text-accent" />
+        <div className="space-y-4">
+          {recent.length > 0 ? (
+            <>
+              {recent.map((campaign, i) => (
+                <div
+                  key={campaign.id}
+                  className="animate-enter"
+                  style={{ animationDelay: `${300 + i * 60}ms` }}
+                >
+                  <CampaignCard campaign={campaign} />
+                </div>
+              ))}
+            </>
+          ) : null}
+
+          {/* Empty state / Add more CTA */}
+          <button
+            onClick={() => setShowTemplates(true)}
+            className="empty-dashed w-full p-12 flex flex-col items-center justify-center text-center cursor-pointer"
+          >
+            <div className="w-16 h-16 rounded-full bg-surface-container flex items-center justify-center mb-4">
+              <CirclePlus className="w-8 h-8 text-outline" />
             </div>
-            <h3 className="title text-text-primary mb-2">No campaigns yet</h3>
-            <p className="body text-text-secondary mb-8 max-w-sm">
-              Create your first campaign to start tracking your marketing initiatives.
+            <p className="font-bold text-on-surface-variant">Plan your next blockbuster</p>
+            <p className="text-sm text-on-surface-variant/60">
+              {campaigns.length === 0
+                ? "Create your first campaign to get started."
+                : "The editorial calendar is wide open for the next month."}
             </p>
-            <div className="flex items-center gap-3">
-              <button onClick={() => setShowTemplates(true)} className="btn btn-secondary btn-md">
-                <FileText className="w-5 h-5" />
-                Use Template
-              </button>
-              <Link href="/campaigns/new" className="btn btn-primary btn-md">
-                <Plus className="w-5 h-5" />
-                Create Campaign
-              </Link>
+          </button>
+        </div>
+      </section>
+
+      {/* Quote + Insight Section */}
+      <section className="mt-24 flex flex-col lg:flex-row gap-12 items-start animate-enter delay-5">
+        {/* Quote card */}
+        <div className="w-full lg:w-1/3 p-10 bg-primary-container rounded-[3rem] relative overflow-hidden">
+          <div className="relative z-10">
+            <Quote className="w-10 h-10 text-on-primary-container mb-4" />
+            <p className="text-2xl font-bold leading-tight text-on-primary-container">
+              "Consistency is the currency of premium brands."
+            </p>
+            <p className="mt-6 text-sm font-bold text-on-primary-container/60 uppercase tracking-widest">
+              Lemon Co. Brand Ethos
+            </p>
+          </div>
+          <div className="absolute -right-10 -bottom-10 w-40 h-40 bg-white/20 blur-3xl rounded-full" />
+        </div>
+
+        {/* Insight card */}
+        <div className="flex-1 pt-0 lg:pt-6">
+          <h3 className="text-on-surface-variant/40 text-[11px] font-black uppercase tracking-[0.3em] mb-4">
+            Market Sentiment
+          </h3>
+          <div className="bg-surface-dim/20 p-8 rounded-[2rem] border border-white/40">
+            <div className="flex items-center gap-8 flex-wrap">
+              <div>
+                <span className="text-3xl font-black text-on-bg">84%</span>
+                <p className="text-sm font-medium text-on-surface-variant">Brand Health Index</p>
+              </div>
+              <div className="hidden sm:block h-12 w-px bg-outline-variant/30" />
+              <div>
+                <span className="text-3xl font-black text-on-bg">+12.4%</span>
+                <p className="text-sm font-medium text-on-surface-variant">
+                  Engagement velocity
+                </p>
+              </div>
+              <div className="ml-auto hidden md:flex items-center gap-2 text-md-primary">
+                <TrendingUp className="w-6 h-6" />
+                <span className="text-sm font-bold">Trending up</span>
+              </div>
             </div>
           </div>
-        ) : (
-          <div className="space-y-3">
-            {recent.map((campaign, i) => (
-              <div
-                key={campaign.id}
-                className="animate-enter"
-                style={{ animationDelay: `${300 + i * 50}ms` }}
-              >
-                <CampaignCard campaign={campaign} />
-              </div>
-            ))}
-          </div>
-        )}
+        </div>
       </section>
 
       <TemplatePickerModal
@@ -189,6 +243,6 @@ export default function Dashboard() {
         onClose={() => setShowTemplates(false)}
         onSelect={handleTemplate}
       />
-    </div>
+    </>
   );
 }

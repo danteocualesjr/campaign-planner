@@ -23,7 +23,9 @@ function Content() {
 
   function onTpl(t: CampaignTemplate) {
     const sd = dateP || new Date().toISOString().split("T")[0];
-    const ed = new Date(new Date(sd).getTime() + 14 * 86400000).toISOString().split("T")[0];
+    const ed = new Date(new Date(sd).getTime() + 14 * 86400000)
+      .toISOString()
+      .split("T")[0];
     setTplData({
       id: "",
       createdAt: "",
@@ -69,32 +71,43 @@ function Content() {
     : undefined;
 
   return (
-    <div className="p-6 lg:p-10 max-w-4xl">
+    <>
       <Link
         href="/campaigns"
-        className="inline-flex items-center gap-2 caption hover:text-accent transition-colors mb-8 animate-enter"
+        className="inline-flex items-center gap-2 text-sm text-sl500 hover:text-md-primary transition-colors mb-8 animate-enter"
       >
         <ArrowLeft className="w-4 h-4" />
         Back to campaigns
       </Link>
 
-      <section className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4 mb-10 animate-enter delay-1">
+      <header className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4 mb-10 animate-enter delay-1">
         <div>
-          <p className="overline mb-2">Create</p>
-          <h1 className="display text-text-primary">New Campaign</h1>
+          <p className="text-[11px] uppercase tracking-[0.2em] font-bold text-sl400 mb-2">
+            Create
+          </p>
+          <h1 className="text-[3.5rem] font-bold tracking-tight text-on-bg leading-none">
+            New Campaign
+          </h1>
         </div>
-        <button onClick={() => setShowTpl(true)} className="btn btn-secondary btn-md w-fit">
-          <FileText className="w-5 h-5" />
+        <button
+          onClick={() => setShowTpl(true)}
+          className="btn-outline px-5 py-2.5 text-sm w-fit"
+        >
+          <FileText className="w-4 h-4" />
           Use Template
         </button>
-      </section>
+      </header>
 
       <div className="animate-enter delay-2">
         <CampaignForm key={tplData?.name || "new"} initialData={init} onSave={onSave} />
       </div>
 
-      <TemplatePickerModal open={showTpl} onClose={() => setShowTpl(false)} onSelect={onTpl} />
-    </div>
+      <TemplatePickerModal
+        open={showTpl}
+        onClose={() => setShowTpl(false)}
+        onSelect={onTpl}
+      />
+    </>
   );
 }
 
@@ -102,12 +115,12 @@ export default function Page() {
   return (
     <Suspense
       fallback={
-        <div className="p-6 lg:p-10 max-w-4xl">
+        <div>
           <div className="h-8 skeleton w-32 mb-8" />
-          <div className="h-16 skeleton w-64 mb-10" />
+          <div className="h-20 skeleton mb-10" />
           <div className="space-y-6">
             {[1, 2, 3, 4].map((i) => (
-              <div key={i} className="h-48 skeleton" />
+              <div key={i} className="h-48 skeleton" style={{ borderRadius: "2rem" }} />
             ))}
           </div>
         </div>

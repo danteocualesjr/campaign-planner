@@ -2,19 +2,24 @@
 
 import { useState, useEffect } from "react";
 import { usePathname } from "next/navigation";
-import { Menu, Plus } from "lucide-react";
+import { Menu, Search, Bell, Moon, Sun } from "lucide-react";
 import Link from "next/link";
 import Sidebar from "./Sidebar";
-import ThemeToggle from "./ThemeToggle";
+
+const topTabs = [
+  { label: "Analytics", href: "#" },
+  { label: "Reports", href: "#" },
+  { label: "Team", href: "#" },
+];
 
 export default function AppShell({ children }: { children: React.ReactNode }) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
-  const [isDark, setIsDark] = useState(true);
+  const [isDark, setIsDark] = useState(false);
   const pathname = usePathname();
 
   useEffect(() => {
     const stored = localStorage.getItem("theme");
-    const dark = stored ? stored === "dark" : true;
+    const dark = stored === "dark";
     setIsDark(dark);
     document.documentElement.classList.toggle("light", !dark);
   }, []);
@@ -32,38 +37,67 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
 
   return (
     <>
-      <Sidebar
-        open={sidebarOpen}
-        onClose={() => setSidebarOpen(false)}
-        isDark={isDark}
-        onToggleTheme={toggleTheme}
-      />
+      <Sidebar open={sidebarOpen} onClose={() => setSidebarOpen(false)} />
 
-      {/* Mobile Header */}
-      <header className="lg:hidden fixed top-0 left-0 right-0 h-16 z-30 bg-bg-secondary border-b border-border-primary flex items-center justify-between px-4">
-        <div className="flex items-center gap-3">
+      {/* Top Nav Bar */}
+      <header className="fixed top-0 right-0 left-0 lg:left-64 h-16 z-40 bg-white/80 backdrop-blur-xl flex items-center justify-between px-6 lg:px-8 text-sm font-medium">
+        {/* Left: Mobile menu + Search */}
+        <div className="flex items-center gap-4 flex-1 max-w-md">
           <button
             onClick={() => setSidebarOpen(true)}
-            className="w-10 h-10 rounded-xl bg-bg-tertiary flex items-center justify-center text-text-secondary hover:text-text-primary transition-colors"
+            className="lg:hidden p-2 rounded-full hover:bg-sl100 transition-colors"
           >
-            <Menu className="w-5 h-5" />
+            <Menu className="w-5 h-5 text-sl600" />
           </button>
-          <div className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded-lg bg-accent flex items-center justify-center">
-              <span className="text-sm">🍋</span>
-            </div>
-            <span className="font-semibold text-text-primary">Lemon Co.</span>
+          <div className="relative w-full hidden sm:block">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-sl400" />
+            <input
+              type="text"
+              placeholder="Search campaigns..."
+              className="input pl-10 h-10 text-sm"
+            />
           </div>
         </div>
-        <div className="flex items-center gap-2">
-          <ThemeToggle isDark={isDark} onToggle={toggleTheme} />
-          <Link href="/campaigns/new" className="btn btn-primary btn-sm">
-            <Plus className="w-4 h-4" />
-          </Link>
+
+        {/* Right: Tabs + Actions */}
+        <div className="flex items-center gap-8">
+          <nav className="hidden md:flex items-center gap-6">
+            {topTabs.map((tab, i) => (
+              <a
+                key={tab.label}
+                href={tab.href}
+                className={`transition-all ${
+                  i === 0
+                    ? "text-yellow-700 font-bold border-b-2 border-yellow-500 pb-1"
+                    : "text-sl500 hover:text-sl900"
+                }`}
+              >
+                {tab.label}
+              </a>
+            ))}
+          </nav>
+
+          <div className="flex items-center gap-1 border-l border-sl200 pl-6">
+            <button className="p-2 rounded-full hover:bg-sl100 transition-colors">
+              <Bell className="w-5 h-5 text-sl600" />
+            </button>
+            <button
+              onClick={toggleTheme}
+              className="p-2 rounded-full hover:bg-sl100 transition-colors"
+              aria-label="Toggle theme"
+            >
+              {isDark ? (
+                <Sun className="w-5 h-5 text-sl600" />
+              ) : (
+                <Moon className="w-5 h-5 text-sl600" />
+              )}
+            </button>
+          </div>
         </div>
       </header>
 
-      <main className="lg:pl-72 min-h-screen pt-16 lg:pt-0 bg-bg-primary">
+      {/* Main Content */}
+      <main className="lg:ml-64 pt-24 pb-12 px-6 lg:px-12 min-h-screen bg-surface">
         {children}
       </main>
     </>

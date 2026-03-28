@@ -8,10 +8,10 @@ export const CAMPAIGN_STATUS_LABELS: Record<CampaignStatus, string> = {
 };
 
 export const CAMPAIGN_STATUS_COLORS: Record<CampaignStatus, { bg: string; text: string; dot: string }> = {
-  draft: { bg: "bg-card", text: "text-secondary", dot: "bg-secondary" },
-  active: { bg: "bg-green-soft", text: "text-green", dot: "bg-green" },
-  paused: { bg: "bg-orange-soft", text: "text-orange", dot: "bg-orange" },
-  completed: { bg: "bg-blue-soft", text: "text-blue", dot: "bg-blue" },
+  draft: { bg: "bg-secondary-container", text: "text-md-secondary", dot: "bg-yellow-500" },
+  active: { bg: "bg-green-100", text: "text-green-700", dot: "bg-green-500" },
+  paused: { bg: "bg-orange-100", text: "text-orange-700", dot: "bg-orange-500" },
+  completed: { bg: "bg-sl200", text: "text-sl600", dot: "bg-sl400" },
 };
 
 export const CAMPAIGN_TYPE_LABELS: Record<CampaignType, string> = {
@@ -23,11 +23,11 @@ export const CAMPAIGN_TYPE_LABELS: Record<CampaignType, string> = {
 };
 
 export const CAMPAIGN_TYPE_COLORS: Record<CampaignType, { bg: string; text: string }> = {
-  social_media: { bg: "bg-blue", text: "text-blue" },
-  email: { bg: "bg-purple", text: "text-purple" },
-  in_store_promo: { bg: "bg-accent", text: "text-accent" },
-  franchise_event: { bg: "bg-green", text: "text-green" },
-  product_launch: { bg: "bg-orange", text: "text-orange" },
+  social_media: { bg: "bg-blue-500", text: "text-blue-600" },
+  email: { bg: "bg-purple-500", text: "text-purple-600" },
+  in_store_promo: { bg: "bg-yellow-500", text: "text-yellow-700" },
+  franchise_event: { bg: "bg-green-500", text: "text-green-600" },
+  product_launch: { bg: "bg-orange-500", text: "text-orange-600" },
 };
 
 export const PRODUCT_LINE_LABELS: Record<ProductLine, string> = {

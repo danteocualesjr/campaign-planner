@@ -1,144 +1,102 @@
 "use client";
 
 import Link from "next/link";
-import { format, differenceInDays, isFuture } from "date-fns";
-import { ArrowUpRight, Zap, AlertTriangle } from "lucide-react";
+import { format, differenceInDays } from "date-fns";
+import { ArrowRight, CalendarDays, Wallet } from "lucide-react";
 import { Campaign } from "@/lib/types";
 import {
   CAMPAIGN_TYPE_LABELS,
-  PRODUCT_LINE_LABELS,
   REGION_LABELS,
 } from "@/lib/constants";
 
-const STATUS_STYLES = {
-  active: "badge-success",
-  draft: "badge-info",
-  completed: "badge-neutral",
-  paused: "badge-warning",
+const TYPE_STYLES: Record<string, string> = {
+  social_media: "type-social",
+  email: "type-email",
+  in_store_promo: "type-promo",
+  franchise_event: "type-event",
+  product_launch: "type-launch",
 };
 
-const STATUS_LABELS = {
+const STATUS_DOT: Record<string, string> = {
+  active: "status-dot-active",
+  draft: "status-dot-draft",
+  paused: "status-dot-paused",
+  completed: "status-dot-completed",
+};
+
+const STATUS_LABELS: Record<string, string> = {
   active: "Active",
   draft: "Draft",
-  completed: "Completed",
   paused: "Paused",
-};
-
-const TYPE_TAG_STYLES: Record<string, string> = {
-  social_media: "tag-social",
-  email: "tag-email",
-  in_store_promo: "tag-promo",
-  event: "tag-event",
-  product_launch: "tag-launch",
+  completed: "Completed",
 };
 
 export default function CampaignCard({ campaign }: { campaign: Campaign }) {
   const startDate = new Date(campaign.startDate);
   const endDate = new Date(campaign.endDate);
-  const today = new Date();
-
-  const daysUntilStart = differenceInDays(startDate, today);
-  const daysUntilEnd = differenceInDays(endDate, today);
-  const totalDays = differenceInDays(endDate, startDate);
-  const daysElapsed = differenceInDays(today, startDate);
-  const progress =
-    campaign.status === "active"
-      ? Math.min(Math.max((daysElapsed / totalDays) * 100, 0), 100)
-      : 0;
-
-  const isUpcoming = isFuture(startDate) && daysUntilStart <= 7;
-  const isEnding = campaign.status === "active" && daysUntilEnd <= 3 && daysUntilEnd >= 0;
 
   return (
     <Link
       href={`/campaigns/${campaign.id}`}
-      className="card card-hover group flex items-stretch overflow-hidden"
+      className="card-campaign p-4 flex items-center gap-8 group block"
     >
-      {/* Left accent */}
-      <div
-        className={`w-1 ${
-          campaign.status === "active"
-            ? "bg-success"
-            : campaign.status === "draft"
-            ? "bg-info"
-            : campaign.status === "paused"
-            ? "bg-warning"
-            : "bg-bg-accent"
-        }`}
-      />
+      {/* Thumbnail placeholder */}
+      <div className="w-48 h-32 rounded-[1.5rem] bg-gradient-to-br from-primary-container/30 via-tertiary-fixed/30 to-secondary-container/40 flex-shrink-0 hidden md:flex items-center justify-center">
+        <span className="text-4xl">🍋</span>
+      </div>
 
-      <div className="flex-1 p-5 flex items-center gap-6">
-        {/* Main info */}
-        <div className="flex-1 min-w-0">
-          <div className="flex items-center gap-3 mb-2 flex-wrap">
-            <h3 className="title text-text-primary truncate group-hover:text-accent transition-colors">
-              {campaign.name}
-            </h3>
-            <span className={`badge ${STATUS_STYLES[campaign.status]}`}>
-              {STATUS_LABELS[campaign.status]}
-            </span>
-            {isUpcoming && (
-              <span className="badge badge-warning">
-                <Zap className="w-3 h-3" />
-                Starts in {daysUntilStart}d
-              </span>
-            )}
-            {isEnding && (
-              <span className="badge badge-danger">
-                <AlertTriangle className="w-3 h-3" />
-                {daysUntilEnd}d left
-              </span>
-            )}
-          </div>
-
-          <div className="flex items-center gap-4 flex-wrap">
+      {/* Campaign Meta Grid */}
+      <div className="flex-1 grid grid-cols-1 sm:grid-cols-4 gap-4 sm:gap-8">
+        {/* Name + Type */}
+        <div className="flex flex-col justify-center">
+          <span className="meta-label mb-1">Campaign Name</span>
+          <h4 className="text-lg font-bold text-on-bg leading-tight group-hover:text-md-primary transition-colors">
+            {campaign.name}
+          </h4>
+          <div className="flex items-center gap-2 mt-2">
             <span
-              className={`badge ${TYPE_TAG_STYLES[campaign.type] || "badge-neutral"}`}
+              className={`chip ${TYPE_STYLES[campaign.type] || ""}`}
             >
               {CAMPAIGN_TYPE_LABELS[campaign.type]}
             </span>
-            <span className="caption">
-              {format(startDate, "MMM d")} – {format(endDate, "MMM d")}
-            </span>
-            <span className="caption">{REGION_LABELS[campaign.region]}</span>
           </div>
-
-          {/* Progress */}
-          {campaign.status === "active" && (
-            <div className="mt-4 flex items-center gap-3">
-              <div className="progress-bar flex-1">
-                <div className="progress-fill" style={{ width: `${progress}%` }} />
-              </div>
-              <span className="text-xs font-medium text-text-muted tabular-nums">
-                {Math.round(progress)}%
-              </span>
-            </div>
-          )}
         </div>
 
-        {/* Right side */}
-        <div className="hidden sm:flex items-center gap-6">
-          {campaign.budget > 0 && (
-            <div className="text-right">
-              <p className="text-xl font-bold text-text-primary tabular-nums">
-                ₱{campaign.budget.toLocaleString()}
-              </p>
-              <p className="text-xs text-text-muted">budget</p>
-            </div>
-          )}
-
-          {campaign.productLines.length > 0 && (
-            <div className="hidden lg:block">
-              <span className="badge badge-accent">
-                {PRODUCT_LINE_LABELS[campaign.productLines[0]]}
-                {campaign.productLines.length > 1 && ` +${campaign.productLines.length - 1}`}
-              </span>
-            </div>
-          )}
-
-          <div className="w-10 h-10 rounded-xl bg-bg-tertiary flex items-center justify-center text-text-muted group-hover:bg-accent group-hover:text-black transition-all">
-            <ArrowUpRight className="w-5 h-5" />
+        {/* Timeline */}
+        <div className="flex flex-col justify-center">
+          <span className="meta-label mb-1">Timeline</span>
+          <div className="flex items-center gap-2 text-on-bg">
+            <CalendarDays className="w-4 h-4 text-sl400" />
+            <span className="text-sm font-medium">
+              {format(startDate, "MMM d")} – {format(endDate, "MMM d")}
+            </span>
           </div>
+        </div>
+
+        {/* Budget */}
+        <div className="flex flex-col justify-center">
+          <span className="meta-label mb-1">Investment</span>
+          <div className="flex items-center gap-2 text-on-bg">
+            <Wallet className="w-4 h-4 text-sl400" />
+            <span className="text-sm font-bold">
+              ₱{campaign.budget.toLocaleString()}
+            </span>
+          </div>
+        </div>
+
+        {/* Status */}
+        <div className="flex items-center">
+          <div className="status-pill">
+            <div className={`status-dot ${STATUS_DOT[campaign.status]}`} />
+            <span>{STATUS_LABELS[campaign.status]}</span>
+          </div>
+        </div>
+      </div>
+
+      {/* Arrow */}
+      <div className="pr-2 hidden sm:block">
+        <div className="w-12 h-12 rounded-full bg-surface-low flex items-center justify-center group-hover:bg-primary-container group-hover:text-on-primary-container text-sl500 transition-colors">
+          <ArrowRight className="w-5 h-5" />
         </div>
       </div>
     </Link>

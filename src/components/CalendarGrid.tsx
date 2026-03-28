@@ -17,7 +17,7 @@ import {
 } from "date-fns";
 import { Plus } from "lucide-react";
 import { Campaign } from "@/lib/types";
-import { CAMPAIGN_TYPE_COLORS, CAMPAIGN_TYPE_LABELS } from "@/lib/constants";
+import { CAMPAIGN_TYPE_LABELS } from "@/lib/constants";
 
 interface Props {
   currentDate: Date;
@@ -26,6 +26,14 @@ interface Props {
 }
 
 const DAYS = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+
+const TYPE_BG: Record<string, string> = {
+  social_media: "bg-blue-500",
+  email: "bg-purple-500",
+  in_store_promo: "bg-yellow-500",
+  franchise_event: "bg-green-500",
+  product_launch: "bg-orange-500",
+};
 
 export default function CalendarGrid({ currentDate, campaigns, onDayClick }: Props) {
   const days = useMemo(() => {
@@ -39,21 +47,24 @@ export default function CalendarGrid({ currentDate, campaigns, onDayClick }: Pro
   const forDay = (d: Date) =>
     campaigns.filter((c) => {
       try {
-        return isWithinInterval(d, { start: parseISO(c.startDate), end: parseISO(c.endDate) });
+        return isWithinInterval(d, {
+          start: parseISO(c.startDate),
+          end: parseISO(c.endDate),
+        });
       } catch {
         return false;
       }
     });
 
   return (
-    <div className="card overflow-hidden">
-      {/* Header */}
-      <div className="grid grid-cols-7 bg-bg-tertiary border-b border-border-primary">
+    <div className="card-surface overflow-hidden">
+      {/* Day names */}
+      <div className="grid grid-cols-7 bg-surface-container">
         {DAYS.map((d, i) => (
           <div
             key={d}
-            className={`py-3 text-center overline ${
-              i === 0 || i === 6 ? "text-text-muted" : "text-text-secondary"
+            className={`py-3 text-center text-[11px] font-bold uppercase tracking-widest ${
+              i === 0 || i === 6 ? "text-sl400" : "text-on-surface-variant"
             }`}
           >
             {d}
@@ -61,7 +72,7 @@ export default function CalendarGrid({ currentDate, campaigns, onDayClick }: Pro
         ))}
       </div>
 
-      {/* Days grid */}
+      {/* Day grid */}
       <div className="grid grid-cols-7">
         {days.map((day, i) => {
           const inMonth = isSameMonth(day, currentDate);
@@ -73,55 +84,53 @@ export default function CalendarGrid({ currentDate, campaigns, onDayClick }: Pro
             <div
               key={i}
               onClick={() => onDayClick(day)}
-              className={`group relative min-h-[120px] p-2 border-b border-r border-border-primary cursor-pointer transition-colors hover:bg-bg-tertiary ${
-                !inMonth ? "opacity-30" : ""
-              } ${weekend && inMonth ? "bg-bg-secondary/50" : ""} ${
+              className={`group relative min-h-[120px] p-2.5 border-b border-r border-outline-variant/15 cursor-pointer transition-colors hover:bg-surface-low ${
+                !inMonth ? "opacity-25" : ""
+              } ${weekend && inMonth ? "bg-surface-container/30" : ""} ${
                 i % 7 === 6 ? "border-r-0" : ""
               }`}
             >
               {/* Today highlight */}
               {isToday && (
-                <div className="absolute inset-1 rounded-lg ring-2 ring-accent/30 bg-accent/5 pointer-events-none" />
+                <div className="absolute inset-1 rounded-xl bg-primary-container/10 ring-2 ring-primary-container/40 pointer-events-none" />
               )}
 
               {/* Day number */}
               <div className="relative flex items-center justify-between mb-2">
                 <span
-                  className={`w-7 h-7 flex items-center justify-center text-sm font-medium rounded-lg ${
+                  className={`w-7 h-7 flex items-center justify-center text-sm font-semibold rounded-full ${
                     isToday
-                      ? "bg-accent text-black font-bold"
-                      : "text-text-secondary"
+                      ? "bg-primary-container text-on-primary-container font-bold"
+                      : "text-on-surface-variant"
                   }`}
                 >
                   {format(day, "d")}
                 </span>
 
-                {/* Add button on hover */}
                 <div className="opacity-0 group-hover:opacity-100 transition-opacity">
-                  <div className="w-6 h-6 rounded-md bg-accent/10 flex items-center justify-center text-accent">
-                    <Plus className="w-3.5 h-3.5" />
+                  <div className="w-5 h-5 rounded-full bg-primary-container/20 flex items-center justify-center text-md-primary">
+                    <Plus className="w-3 h-3" />
                   </div>
                 </div>
               </div>
 
-              {/* Campaign chips */}
+              {/* Campaigns */}
               <div className="space-y-1">
-                {dc.slice(0, 3).map((c) => {
-                  const tc = CAMPAIGN_TYPE_COLORS[c.type];
-                  return (
-                    <Link
-                      key={c.id}
-                      href={`/campaigns/${c.id}`}
-                      onClick={(e) => e.stopPropagation()}
-                      className={`block text-xs px-2 py-1 rounded truncate font-medium ${tc.bg} text-white hover:opacity-80 transition-opacity`}
-                      title={`${c.name} (${CAMPAIGN_TYPE_LABELS[c.type]})`}
-                    >
-                      {c.name}
-                    </Link>
-                  );
-                })}
+                {dc.slice(0, 3).map((c) => (
+                  <Link
+                    key={c.id}
+                    href={`/campaigns/${c.id}`}
+                    onClick={(e) => e.stopPropagation()}
+                    className={`block text-[10px] px-2 py-1 rounded-lg truncate font-medium text-white ${
+                      TYPE_BG[c.type] || "bg-sl500"
+                    } hover:opacity-80 transition-opacity`}
+                    title={`${c.name} (${CAMPAIGN_TYPE_LABELS[c.type]})`}
+                  >
+                    {c.name}
+                  </Link>
+                ))}
                 {dc.length > 3 && (
-                  <span className="block text-xs text-accent font-medium pl-1">
+                  <span className="block text-[10px] text-md-primary font-bold pl-1">
                     +{dc.length - 3} more
                   </span>
                 )}
