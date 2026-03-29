@@ -2,7 +2,49 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { Plus, FileText, Rocket, PenLine, Wallet, CirclePlus, Quote, TrendingUp } from "lucide-react";
+import { Plus, FileText, Rocket, PenLine, Wallet, CirclePlus, Quote } from "lucide-react";
+
+function Sparkline() {
+  return (
+    <div className="w-36 h-16 overflow-hidden">
+      <svg viewBox="0 0 120 48" fill="none" className="w-full h-full">
+        <defs>
+          <linearGradient id="sparkFill" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stopColor="#785a00" stopOpacity="0.2" />
+            <stop offset="100%" stopColor="#785a00" stopOpacity="0" />
+          </linearGradient>
+        </defs>
+        <path
+          d="M0 40 Q 15 28, 25 32 T 45 18 T 65 24 T 85 8 T 105 14 L 120 10 L 120 48 L 0 48 Z"
+          fill="url(#sparkFill)"
+        >
+          <animate attributeName="d" dur="4s" repeatCount="indefinite" values="
+            M0 40 Q 15 28, 25 32 T 45 18 T 65 24 T 85 8 T 105 14 L 120 10 L 120 48 L 0 48 Z;
+            M0 36 Q 15 32, 25 26 T 45 22 T 65 16 T 85 12 T 105 18 L 120 8 L 120 48 L 0 48 Z;
+            M0 40 Q 15 28, 25 32 T 45 18 T 65 24 T 85 8 T 105 14 L 120 10 L 120 48 L 0 48 Z
+          " />
+        </path>
+        <path
+          d="M0 40 Q 15 28, 25 32 T 45 18 T 65 24 T 85 8 T 105 14 L 120 10"
+          stroke="#785a00"
+          strokeWidth="3"
+          strokeLinecap="round"
+          fill="none"
+        >
+          <animate attributeName="d" dur="4s" repeatCount="indefinite" values="
+            M0 40 Q 15 28, 25 32 T 45 18 T 65 24 T 85 8 T 105 14 L 120 10;
+            M0 36 Q 15 32, 25 26 T 45 22 T 65 16 T 85 12 T 105 18 L 120 8;
+            M0 40 Q 15 28, 25 32 T 45 18 T 65 24 T 85 8 T 105 14 L 120 10
+          " />
+        </path>
+        <circle r="4" fill="#785a00">
+          <animate attributeName="cx" dur="4s" repeatCount="indefinite" values="120;120;120" />
+          <animate attributeName="cy" dur="4s" repeatCount="indefinite" values="10;8;10" />
+        </circle>
+      </svg>
+    </div>
+  );
+}
 import { Campaign, CampaignTemplate } from "@/lib/types";
 import { getCampaigns, createCampaign } from "@/lib/storage";
 import CampaignCard from "@/components/CampaignCard";
@@ -229,9 +271,8 @@ export default function Dashboard() {
                   Engagement velocity
                 </p>
               </div>
-              <div className="ml-auto hidden md:flex items-center gap-2 text-md-primary">
-                <TrendingUp className="w-6 h-6" />
-                <span className="text-sm font-bold">Trending up</span>
+              <div className="ml-auto hidden md:block">
+                <Sparkline />
               </div>
             </div>
           </div>
