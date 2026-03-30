@@ -1,8 +1,39 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import Link from "next/link";
 import { Plus, FileText, Rocket, PenLine, Wallet, CirclePlus, Quote } from "lucide-react";
+
+function AnimatedNumber({ value, prefix = "", duration = 1200 }: { value: number; prefix?: string; duration?: number }) {
+  const [display, setDisplay] = useState(0);
+  const ref = useRef<HTMLSpanElement>(null);
+  const started = useRef(false);
+
+  useEffect(() => {
+    if (started.current) return;
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting && !started.current) {
+          started.current = true;
+          const start = performance.now();
+          const step = (now: number) => {
+            const t = Math.min((now - start) / duration, 1);
+            const eased = 1 - Math.pow(1 - t, 3);
+            setDisplay(Math.round(eased * value));
+            if (t < 1) requestAnimationFrame(step);
+          };
+          requestAnimationFrame(step);
+          observer.disconnect();
+        }
+      },
+      { threshold: 0.3 }
+    );
+    if (ref.current) observer.observe(ref.current);
+    return () => observer.disconnect();
+  }, [value, duration]);
+
+  return <span ref={ref}>{prefix}{display.toLocaleString()}</span>;
+}
 
 function Sparkline() {
   return (
@@ -147,7 +178,7 @@ export default function Dashboard() {
           </div>
           <div>
             <span className="text-5xl font-black text-on-bg tracking-tighter">
-              {active.length}
+              <AnimatedNumber value={active.length} />
             </span>
             <h3 className="text-on-surface-variant font-medium mt-1">Active campaigns</h3>
           </div>
@@ -165,7 +196,7 @@ export default function Dashboard() {
           </div>
           <div>
             <span className="text-5xl font-black text-on-bg tracking-tighter">
-              {drafts.length}
+              <AnimatedNumber value={drafts.length} />
             </span>
             <h3 className="text-on-surface-variant font-medium mt-1">In draft</h3>
           </div>
@@ -183,7 +214,7 @@ export default function Dashboard() {
           </div>
           <div>
             <span className="text-5xl font-black text-on-bg tracking-tighter">
-              ₱{budget.toLocaleString()}
+              <AnimatedNumber value={budget} prefix="₱" duration={1600} />
             </span>
             <h3 className="text-on-surface-variant font-medium mt-1">Total budget</h3>
           </div>
